@@ -43,5 +43,11 @@
   "bugs": {
     "url": "https://github.com/radubrehar/react-dropdown-button/issues"
   },
-  "homepage": "https://github.com/radubrehar/react-dropdown-button"
+  "homepage": "https://github.com/radubrehar/react-dropdown-button",
+  "dependencies": {
+    "normalize.css": "^3.0.2",
+    "object-assign": "^2.0.0",
+    "react": "^0.12.2",
+    "react-split-button": "^0.2.0"
+  }
 }
