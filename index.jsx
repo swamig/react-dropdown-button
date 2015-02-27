@@ -57,7 +57,7 @@ var App = React.createClass({
         return (
             <div className="App" style={{padding: 10}}>
 
-                <Button xdisabled={true} items={items} onClick={fn} style={{xwidth: 50}} label="hello world">
+                <Button arrowPosition="left" xdisabled={true} items={items} onClick={fn} style={{xwidth: 50}} label="hello world">
 
                 </Button>
                 <Button href="#test" menu={menu}>world</Button>
