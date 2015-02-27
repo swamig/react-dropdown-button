@@ -2,10 +2,7 @@
 
 var React = require('react')
 var Button = require('./src')
-
-require('./index.styl')
-
-var VALUE = 'xxx'
+var B = require('react-button')
 
 var items = [
     {
@@ -59,11 +56,12 @@ var App = React.createClass({
 
         return (
             <div className="App" style={{padding: 10}}>
-                <input placeholder="X"/>
-                <Button items={items} fn={fn} overArrowStyle={{color: 'blue'}} overClassName="over" onArrowClick={arrowClick} activeStyle={{position: 'relative', top: 1}} style={{textAlign: 'right', color: 'red', width: 130, height: 100, borderRadius: 10}}>
-                    hello
+
+                <Button xdisabled={true} items={items} onClick={fn} style={{xwidth: 50}} label="hello world">
+
                 </Button>
-                <Button overClassName="over" href="#test" menu={menu}>world</Button>
+                <Button href="#test" menu={menu}>world</Button>
+                <B href="#test" menu={menu}>world</B>
             </div>
         )
     }
