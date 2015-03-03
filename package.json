@@ -44,10 +44,12 @@
     "url": "https://github.com/radubrehar/react-dropdown-button/issues"
   },
   "homepage": "https://github.com/radubrehar/react-dropdown-button",
+  "peerDependencies": {
+    "react": ">=0.12.0"
+  },
   "dependencies": {
     "has-touch": "^1.0.1",
     "object-assign": "^2.0.0",
-    "react": "^0.12.2",
     "react-button": "^1.0.0",
     "react-clonewithprops": "^1.0.1",
     "react-menus": "^0.2.0"
