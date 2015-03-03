@@ -11,9 +11,11 @@ var MenuFactory = React.createFactory(Menu)
 
 function emptyFn(){}
 
+var DISPLAY_NAME = 'ReactDropDownButton'
+
 module.exports = React.createClass({
 
-    displayName: 'ReactDropDownButton',
+    displayName: DISPLAY_NAME,
 
     getInitialState: function(){
     	return {
@@ -22,6 +24,10 @@ module.exports = React.createClass({
 
     getDefaultProps: function(){
     	return {
+            'data-display-name': DISPLAY_NAME,
+            stopClickPropagation: false,
+            hideMenuOnClick: true,
+
     		defaultStyle: {
     			boxSizing: 'border-box',
     			verticalAlign: 'top',
@@ -61,13 +67,12 @@ module.exports = React.createClass({
     prepareProps: function(thisProps, state) {
     	var props = assign({}, thisProps)
 
-    	props['data-display-name'] = 'ReactDropDownButton'
     	props.style = this.prepareStyle(props)
     	props.onClick = this.handleClick.bind(this, props)
     	props.renderChildren = this.renderChildren.bind(this, props)
 
-    	props.onDefaultStylesApplied = this.onDefaultStylesApplied.bind(this, props)
-    	props.onStylesApplied = this.onStylesApplied.bind(this, props)
+        props.onDefaultStyleReady = this.onDefaultStyleReady.bind(this, props)
+        props.onStyleReady        = this.onStyleReady.bind(this, props)
 
     	return props
     },
@@ -85,20 +90,20 @@ module.exports = React.createClass({
     	return style
     },
 
-    onDefaultStylesApplied: function(props, style) {
-    	if (this.state.menu){
+    onDefaultStyleReady: function(props, style) {
+    	if (this.menu){
     		assign(style, props.defaultOpenedStyle)
     	}
 
-    	;(this.props.onDefaultStylesApplied || emptyFn)(style)
+    	;(this.props.onDefaultStyleReady || emptyFn)(style)
     },
 
-    onStylesApplied: function(props, style) {
-    	if (this.state.menu){
+    onStyleReady: function(props, style) {
+    	if (this.menu){
     		assign(style, props.openedStyle)
     	}
 
-    	;(this.props.onStylesApplied || emptyFn)(style)
+    	;(this.props.onStyleReady || emptyFn)(style)
     },
 
     renderChildren: function(props, children) {
@@ -110,12 +115,19 @@ module.exports = React.createClass({
     		leftArrow = arrow
     		rightArrow = null
     	}
-    	return [
+
+    	var children = [
+            this.state.menu,
     		leftArrow,
     		children,
-    		this.renderMenu(props, this.state),
     		rightArrow
     	]
+
+        if (typeof this.props.renderChildren == 'function'){
+            return this.props.renderChildren(children)
+        }
+
+        return children
     },
 
     renderArrow: function(props) {
@@ -136,33 +148,59 @@ module.exports = React.createClass({
 
     	var otherSide = props.arrowPosition != 'right'? 'Right': 'Left'
 
-    	var defaultArrowStyle = assign({}, props.defaultArrowStyle)
-    	defaultArrowStyle['padding' + otherSide] = props.style.padding
+    	var defaultArrowStyle = props.defaultArrowStyle
+
+        if (props.smartArrowPadding){
+            defaultArrowStyle = assign({}, defaultArrowStyle)
+        	defaultArrowStyle['padding' + otherSide] = props.style.padding
+        }
 
     	var arrowStyle = assign({}, defaultArrowStyle, props.arrowStyle)
 
     	return <span style={arrowStyle}>▼</span>
     },
 
-    handleClick: function(props) {
+    handleClick: function(props, event) {
+
+        if (event && event.nativeEvent && event.nativeEvent.clickInsideMenu){
+            //there was a click inside the menu,
+            //so don't count that as a click in the button
+            return
+        }
+
+        props.stopClickPropagation && event.stopPropagation()
 
     	;(this.props.onClick || emptyFn).apply(null, [].slice.call(arguments, 1))
 
-	    this.toggleMenu(props)
-    },
-
-    renderMenu: function(props, state) {
-        if (state.menu){
-            return state.menu
-        }
+        this.ignoreClick(function(){
+            //in order to get picked up after the click event has propagated to the window
+    	    this.toggleMenu(props)
+        })
     },
 
     toggleMenu: function(props) {
-        if (this.state.menu){
+        if (this.menu){
             this.hideMenu()
         } else {
             this.showMenu(props)
         }
+    },
+
+    setMenu: function(menu) {
+
+        this.menu = menu
+
+        if (typeof this.props.onMenuChange == 'function'){
+            this.props.onMenuChange(menu, this, this._rootNodeID)
+        }
+
+        if (this.props.renderMenu === false){
+            return
+        }
+
+        this.setState({
+            menu: menu
+        })
     },
 
     showMenu: function(props) {
@@ -172,7 +210,7 @@ module.exports = React.createClass({
 
         this.removeClickListener()
 
-        document.addEventListener('click', this.clickEventListener = this.onDocumentClick)
+        window.addEventListener('click', this.clickEventListener = this.onDocumentClick)
 
         var menuProps = assign({}, props.menuProps)
         var menuStyle = assign({
@@ -204,16 +242,15 @@ module.exports = React.createClass({
         if (props.menu){
             menu = cloneWithProps(props.menu, menuProps)
         } else {
-            menu = (props.menuFactory || MenuFactory)(menuProps)
+            menu = typeof props.menuFactory == 'function'? props.menuFactory(menuProps): undefined
 
-            if (menu === undefined){
+            if (menu === undefined && menuProps.items){
                 menu = MenuFactory(menuProps)
             }
         }
 
-        this.setState({
-            menu: menu
-        })
+
+        this.setMenu(menu)
     },
 
     isExpanderClick: function(event) {
@@ -229,7 +266,10 @@ module.exports = React.createClass({
     },
 
     onDocumentClick: function(event) {
-        if (this.isExpanderClick(event)){
+        if (
+            this.ignoreWindowClick ||
+            this.isExpanderClick(event)
+        ){
             return
         }
 
@@ -238,37 +278,57 @@ module.exports = React.createClass({
 
     componentWillUnmount: function(){
         this.removeClickListener()
+        this.setMenu(false)
     },
 
     removeClickListener: function() {
         if (this.clickEventListener){
-            document.removeEventListener('click', this.clickEventListener)
+            window.removeEventListener('click', this.clickEventListener)
             this.clickEventListener = null
         }
     },
 
     hideMenu: function() {
-        if (this.state.menu){
+        if (this.menu){
             this.removeClickListener()
-            this.setState({
-                menu: false
-            })
+            this.setMenu(false)
         }
     },
 
-    onMenuItemClick: function(props, event) {
+    onMenuItemClick: function(props, event, itemProps, index) {
+
+        if (index === undefined){
+            //default click event propagated, not called by the menu cmp
+            return
+        }
+
         if (this.isExpanderClick(event)){
             return
         }
 
         if (this.props.menuProps){
-        	;(this.props.menuProps.onClick || emptyFn)(event)
+        	;(this.props.menuProps.onClick || emptyFn)(event, itemProps, index)
         }
 
-        event.nativeEvent.preventButtonClick = true
+        event.nativeEvent.clickInsideMenu = true
 
-        //when menu is hidden, mouseleave from button is not triggered, so we trigger it manually
-        this.refs.button.handleMouseLeave(props, event)
-        this.hideMenu()
+        ;(this.props.onMenuClick || emptyFn)(event, itemProps, index)
+
+        if (!this.props.hideMenuOnClick || event.nativeEvent.hideMenu === false || (itemProps && itemProps.data && itemProps.data.hideMenu === false)){
+            this.ignoreClick()
+        } else {
+            //when menu is hidden, mouseleave from button is not triggered, so we trigger it manually
+            this.menu && this.refs.button && this.refs.button.handleMouseLeave(props, event)
+            // this.hideMenu() - hideMenu will be called by onDocumentClick
+        }
+    },
+
+    ignoreClick: function(callback) {
+        this.ignoreWindowClick = true
+
+        setTimeout(function(){
+            this.ignoreWindowClick = false
+            typeof callback == 'function' && callback.call(this)
+        }.bind(this), 0)
     }
 })
