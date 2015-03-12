@@ -1,12 +1,12 @@
 'use strict';
 
 var React  = require('react')
-var Button = require('react-button/src')
+var Button = require('react-button')
 var assign = require('object-assign')
 var cloneWithProps = require('react-clonewithprops')
 var hasTouch = require('has-touch')
 
-var Menu   = require('react-menus/src')
+var Menu   = require('react-menus')
 var MenuFactory = React.createFactory(Menu)
 
 function emptyFn(){}

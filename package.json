@@ -50,8 +50,8 @@
   "dependencies": {
     "has-touch": "^1.0.1",
     "object-assign": "^2.0.0",
-    "react-button": "^1.0.0",
+    "react-button": "git://github.com/radubrehar/react-button",
     "react-clonewithprops": "^1.0.1",
-    "react-menus": "^0.2.0"
+    "react-menus": "git://github.com/radubrehar/react-menus"
   }
 }
