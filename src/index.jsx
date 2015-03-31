@@ -253,7 +253,10 @@ var DropDownButton = React.createClass({
         var menu
 
         if (props.menu){
-            prevOnChildClick = props.menu.onChildClick || prevOnChildClick
+            if (props.menu.props){
+                prevOnChildClick = props.menu.props.onChildClick || prevOnChildClick
+            }
+
             menu = cloneWithProps(props.menu, menuProps)
         } else {
             menu = typeof props.menuFactory == 'function'? props.menuFactory(menuProps): undefined
