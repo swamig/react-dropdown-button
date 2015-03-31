@@ -296,6 +296,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            'br-tr'
 	        ]
 
+	        var prevOnChildClick = menuProps.onChildClick
+
 	        assign(menuProps, {
 	            // onClick    : this.onMenuItemClick.bind(this, props),
 				onChildClick    : this.onMenuChildClick.bind(this, props),
@@ -307,6 +309,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var menu
 
 	        if (props.menu){
+	            prevOnChildClick = props.menu.onChildClick || prevOnChildClick
 	            menu = cloneWithProps(props.menu, menuProps)
 	        } else {
 	            menu = typeof props.menuFactory == 'function'? props.menuFactory(menuProps): undefined
@@ -315,6 +318,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                menu = MenuFactory(menuProps)
 	            }
 	        }
+
+	        this.prevOnChildClick = prevOnChildClick
 
 	        this.setMenu(menu)
 	    },
@@ -372,8 +377,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return
 	        }
 
-	        if (this.props.menuProps){
-	        	;(this.props.menuProps.onChildClick || emptyFn)(event, itemProps)
+	        if (typeof this.prevOnChildClick == 'function'){
+	        	this.prevOnChildClick(event, itemProps)
 	        }
 
 	        event.nativeEvent.clickInsideMenu = true
@@ -2168,7 +2173,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Region           = __webpack_require__(22)
 	var assign           = __webpack_require__(2)
 	var cloneWithProps   = __webpack_require__(3)
-	var getPositionStyle = __webpack_require__(27)
+	var getPositionStyle = __webpack_require__(25)
 
 	module.exports = function(props, state) {
 	    var menu = state.menu
@@ -2304,7 +2309,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React  = __webpack_require__(1)
 	var assign = __webpack_require__(2)
 
-	var renderCells     = __webpack_require__(25)
+	var renderCells     = __webpack_require__(26)
 	var MenuItem        = __webpack_require__(10)
 	var MenuItemFactory = React.createFactory(MenuItem)
 	var MenuSeparator   = __webpack_require__(9)
@@ -2377,7 +2382,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var assign   = __webpack_require__(2)
 	var buffer   = __webpack_require__(35)
 
-	var Scroller = __webpack_require__(26)
+	var Scroller = __webpack_require__(27)
 
 	function stop(event){
 	    event.preventDefault()
@@ -2855,6 +2860,120 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	var Region = __webpack_require__(22)
+	var assign = __webpack_require__(2)
+	var align  = __webpack_require__(36)
+
+	module.exports = function getPositionStyle(props, state){
+	    if (!state.menu || !this.didMount){
+	        this.prevMenuIndex = -1
+	        return
+	    }
+
+	    var offset = state.menuOffset
+	    var left   = offset.left + offset.width
+	    var top    = offset.top
+
+	    var menuIndex = state.itemProps.index
+	    var sameMenu = this.prevMenuIndex == menuIndex
+
+	    if (this.aligning && !sameMenu){
+	        this.aligning = false
+	    }
+
+	    this.prevMenuIndex = menuIndex
+
+	    var style = {
+	        position     : 'absolute',
+	        visibility   : 'hidden',
+	        overflow     : 'hidden',
+	        pointerEvents: 'none',
+	        left         : left,
+	        top          : top,
+	        zIndex       : 1
+	    }
+
+	    if (!this.aligning && !sameMenu){
+	        setTimeout(function(){
+
+	            if (!this.didMount){
+	                return
+	            }
+
+	            var thisRegion = Region.from(this.getDOMNode())
+	            var menuItemRegion = Region.from({
+	                left  : thisRegion.left,
+	                top   : thisRegion.top + offset.top,
+	                width : offset.width,
+	                height: offset.height
+	            })
+
+	            var subMenuMounted = this.refs.subMenu && this.refs.subMenu.isMounted()
+	            if (!subMenuMounted){
+	                return
+	            }
+
+	            var subMenuRegion = Region.from(this.refs.subMenu.refs.scrollContainer.getCurrentSizeDOM())
+
+	            var initialHeight = subMenuRegion.height
+
+	            var alignPos = align(props, subMenuRegion, /* alignTo */ menuItemRegion, props.constrainTo)
+
+	            var newHeight = subMenuRegion.height
+	            var maxHeight
+
+	            if (newHeight < initialHeight){
+	                maxHeight = newHeight - props.subMenuConstrainMargin
+	            }
+
+	            if (maxHeight && alignPos == -1 /* upwards*/){
+	                subMenuRegion.top = subMenuRegion.bottom - maxHeight
+	            }
+
+	            var newLeft = subMenuRegion.left - thisRegion.left
+	            var newTop  = subMenuRegion.top  - thisRegion.top
+
+	            if (Math.abs(newLeft - left) < 5){
+	                newLeft = left
+	            }
+
+	            if (Math.abs(newTop - top) < 5){
+	                newTop = top
+	            }
+
+	            this.subMenuPosition = newLeft < 0? 'left': 'right'
+
+	            this.alignOffset = {
+	                left: newLeft,
+	                top : newTop
+	            }
+	            this.aligning = true
+
+	            this.setState({
+	                subMenuMaxHeight: maxHeight
+	            })
+
+	        }.bind(this), 0)
+	    }
+
+	    if (sameMenu || (this.aligning && this.alignOffset)){
+	        assign(style, this.alignOffset)
+	        style.visibility = 'visible'
+	        delete style.pointerEvents
+	        delete style.overflow
+	    }
+
+	    this.aligning = false
+
+	    return style
+	}
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	var renderCell = __webpack_require__(28)
 
 	module.exports = function(props) {
@@ -2862,7 +2981,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3067,120 +3186,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Scroller
 
 /***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Region = __webpack_require__(22)
-	var assign = __webpack_require__(2)
-	var align  = __webpack_require__(36)
-
-	module.exports = function getPositionStyle(props, state){
-	    if (!state.menu || !this.didMount){
-	        this.prevMenuIndex = -1
-	        return
-	    }
-
-	    var offset = state.menuOffset
-	    var left   = offset.left + offset.width
-	    var top    = offset.top
-
-	    var menuIndex = state.itemProps.index
-	    var sameMenu = this.prevMenuIndex == menuIndex
-
-	    if (this.aligning && !sameMenu){
-	        this.aligning = false
-	    }
-
-	    this.prevMenuIndex = menuIndex
-
-	    var style = {
-	        position     : 'absolute',
-	        visibility   : 'hidden',
-	        overflow     : 'hidden',
-	        pointerEvents: 'none',
-	        left         : left,
-	        top          : top,
-	        zIndex       : 1
-	    }
-
-	    if (!this.aligning && !sameMenu){
-	        setTimeout(function(){
-
-	            if (!this.didMount){
-	                return
-	            }
-
-	            var thisRegion = Region.from(this.getDOMNode())
-	            var menuItemRegion = Region.from({
-	                left  : thisRegion.left,
-	                top   : thisRegion.top + offset.top,
-	                width : offset.width,
-	                height: offset.height
-	            })
-
-	            var subMenuMounted = this.refs.subMenu && this.refs.subMenu.isMounted()
-	            if (!subMenuMounted){
-	                return
-	            }
-
-	            var subMenuRegion = Region.from(this.refs.subMenu.refs.scrollContainer.getCurrentSizeDOM())
-
-	            var initialHeight = subMenuRegion.height
-
-	            var alignPos = align(props, subMenuRegion, /* alignTo */ menuItemRegion, props.constrainTo)
-
-	            var newHeight = subMenuRegion.height
-	            var maxHeight
-
-	            if (newHeight < initialHeight){
-	                maxHeight = newHeight - props.subMenuConstrainMargin
-	            }
-
-	            if (maxHeight && alignPos == -1 /* upwards*/){
-	                subMenuRegion.top = subMenuRegion.bottom - maxHeight
-	            }
-
-	            var newLeft = subMenuRegion.left - thisRegion.left
-	            var newTop  = subMenuRegion.top  - thisRegion.top
-
-	            if (Math.abs(newLeft - left) < 5){
-	                newLeft = left
-	            }
-
-	            if (Math.abs(newTop - top) < 5){
-	                newTop = top
-	            }
-
-	            this.subMenuPosition = newLeft < 0? 'left': 'right'
-
-	            this.alignOffset = {
-	                left: newLeft,
-	                top : newTop
-	            }
-	            this.aligning = true
-
-	            this.setState({
-	                subMenuMaxHeight: maxHeight
-	            })
-
-	        }.bind(this), 0)
-	    }
-
-	    if (sameMenu || (this.aligning && this.alignOffset)){
-	        assign(style, this.alignOffset)
-	        style.visibility = 'visible'
-	        delete style.pointerEvents
-	        delete style.overflow
-	    }
-
-	    this.aligning = false
-
-	    return style
-	}
-
-/***/ },
 /* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -3202,11 +3207,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var hasOwn      = __webpack_require__(38)
-	var getPrefixed = __webpack_require__(39)
+	var hasOwn      = __webpack_require__(41)
+	var getPrefixed = __webpack_require__(42)
 
-	var map      = __webpack_require__(40)
-	var plugable = __webpack_require__(41)
+	var map      = __webpack_require__(43)
+	var plugable = __webpack_require__(44)
 
 	function plugins(key, value){
 
@@ -3283,8 +3288,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var getStylePrefixed = __webpack_require__(42)
-	var properties       = __webpack_require__(43)
+	var getStylePrefixed = __webpack_require__(38)
+	var properties       = __webpack_require__(39)
 
 	module.exports = function(key, value){
 
@@ -3322,7 +3327,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var getCssPrefixedValue = __webpack_require__(44)
+	var getCssPrefixedValue = __webpack_require__(40)
 
 	module.exports = function(target){
 		target.plugins = target.plugins || [
@@ -3459,8 +3464,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var hasOwn    = __webpack_require__(60)
-	var newify    = __webpack_require__(59)
+	var hasOwn    = __webpack_require__(59)
+	var newify    = __webpack_require__(60)
 
 	var assign      = __webpack_require__(2);
 	var EventEmitter = __webpack_require__(61).EventEmitter
@@ -4515,94 +4520,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = function(obj, prop){
-		return Object.prototype.hasOwnProperty.call(obj, prop)
-	}
-
-
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getStylePrefixed = __webpack_require__(51)
-	var properties       = __webpack_require__(52)
-
-	module.exports = function(key, value){
-
-		if (!properties[key]){
-			return key
-		}
-
-		return getStylePrefixed(key, value)
-	}
-
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	module.exports = function(fn, item){
-
-		if (!item){
-			return
-		}
-
-		if (Array.isArray(item)){
-			return item.map(fn).filter(function(x){
-				return !!x
-			})
-		} else {
-			return fn(item)
-		}
-	}
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getCssPrefixedValue = __webpack_require__(54)
-
-	module.exports = function(target){
-		target.plugins = target.plugins || [
-			(function(){
-				var values = {
-					'flex':1,
-					'inline-flex':1
-				}
-
-				return function(key, value){
-					if (key === 'display' && value in values){
-						return {
-							key  : key,
-							value: getCssPrefixedValue(key, value)
-						}
-					}
-				}
-			})()
-		]
-
-		target.plugin = function(fn){
-			target.plugins = target.plugins || []
-
-			target.plugins.push(fn)
-		}
-
-		return target
-	}
-
-/***/ },
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var toUpperFirst = __webpack_require__(48)
-	var getPrefix    = __webpack_require__(49)
+	var toUpperFirst = __webpack_require__(51)
+	var getPrefix    = __webpack_require__(48)
 	var el           = __webpack_require__(50)
 
 	var MEMORY = {}
@@ -4642,7 +4561,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 43 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4682,13 +4601,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 44 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var getPrefix     = __webpack_require__(49)
-	var forcePrefixed = __webpack_require__(53)
+	var getPrefix     = __webpack_require__(48)
+	var forcePrefixed = __webpack_require__(49)
 	var el            = __webpack_require__(50)
 
 	var MEMORY = {}
@@ -4733,6 +4652,92 @@ return /******/ (function(modules) { // webpackBootstrap
 	    MEMORY[k] = value
 
 	    return value
+	}
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function(obj, prop){
+		return Object.prototype.hasOwnProperty.call(obj, prop)
+	}
+
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getStylePrefixed = __webpack_require__(53)
+	var properties       = __webpack_require__(54)
+
+	module.exports = function(key, value){
+
+		if (!properties[key]){
+			return key
+		}
+
+		return getStylePrefixed(key, value)
+	}
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function(fn, item){
+
+		if (!item){
+			return
+		}
+
+		if (Array.isArray(item)){
+			return item.map(fn).filter(function(x){
+				return !!x
+			})
+		} else {
+			return fn(item)
+		}
+	}
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getCssPrefixedValue = __webpack_require__(52)
+
+	module.exports = function(target){
+		target.plugins = target.plugins || [
+			(function(){
+				var values = {
+					'flex':1,
+					'inline-flex':1
+				}
+
+				return function(key, value){
+					if (key === 'display' && value in values){
+						return {
+							key  : key,
+							value: getCssPrefixedValue(key, value)
+						}
+					}
+				}
+			})()
+		]
+
+		target.plugin = function(fn){
+			target.plugins = target.plugins || []
+
+			target.plugins.push(fn)
+		}
+
+		return target
 	}
 
 /***/ },
@@ -4847,19 +4852,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = function(str){
-		return str?
-				str.charAt(0).toUpperCase() + str.slice(1):
-				''
-	}
-
-/***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var toUpperFirst = __webpack_require__(48)
+	var toUpperFirst = __webpack_require__(51)
 	var prefixes     = ["ms", "Moz", "Webkit", "O"]
 
 	var el = __webpack_require__(50)
@@ -4893,6 +4886,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var toUpperFirst = __webpack_require__(51)
+	var getPrefix    = __webpack_require__(48)
+	var properties   = __webpack_require__(39)
+
+	/**
+	 * Returns the given key prefixed, if the property is found in the prefixProps map.
+	 *
+	 * Does not test if the property supports the given value unprefixed.
+	 * If you need this, use './getPrefixed' instead
+	 */
+	module.exports = function(key, value){
+
+		if (!properties[key]){
+			return key
+		}
+
+		var prefix = getPrefix(key)
+
+		return prefix?
+					prefix + toUpperFirst(key):
+					key
+	}
+
+/***/ },
 /* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -4920,44 +4942,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var toUpperFirst = __webpack_require__(62)
-	var getPrefix    = __webpack_require__(63)
-	var el           = __webpack_require__(64)
-
-	var MEMORY = {}
-	var STYLE
-	var ELEMENT
-
-	module.exports = function(key, value){
-
-	    ELEMENT = ELEMENT || el()
-	    STYLE   = STYLE   || ELEMENT.style
-
-	    var k = key// + ': ' + value
-
-	    if (MEMORY[k]){
-	        return MEMORY[k]
-	    }
-
-	    var prefix
-	    var prefixed
-
-	    if (!(key in STYLE)){//we have to prefix
-
-	        prefix = getPrefix('appearance')
-
-	        if (prefix){
-	            prefixed = prefix + toUpperFirst(key)
-
-	            if (prefixed in STYLE){
-	                key = prefixed
-	            }
-	        }
-	    }
-
-	    MEMORY[k] = key
-
-	    return key
+	module.exports = function(str){
+		return str?
+				str.charAt(0).toUpperCase() + str.slice(1):
+				''
 	}
 
 /***/ },
@@ -4966,77 +4954,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = {
-	  'alignItems': 1,
-	  'justifyContent': 1,
-	  'flex': 1,
-	  'flexFlow': 1,
-
-	  'userSelect': 1,
-	  'transform': 1,
-	  'transition': 1,
-	  'transformOrigin': 1,
-	  'transformStyle': 1,
-	  'transitionProperty': 1,
-	  'transitionDuration': 1,
-	  'transitionTimingFunction': 1,
-	  'transitionDelay': 1,
-	  'borderImage': 1,
-	  'borderImageSlice': 1,
-	  'boxShadow': 1,
-	  'backgroundClip': 1,
-	  'backfaceVisibility': 1,
-	  'perspective': 1,
-	  'perspectiveOrigin': 1,
-	  'animation': 1,
-	  'animationDuration': 1,
-	  'animationName': 1,
-	  'animationDelay': 1,
-	  'animationDirection': 1,
-	  'animationIterationCount': 1,
-	  'animationTimingFunction': 1,
-	  'animationPlayState': 1,
-	  'animationFillMode': 1,
-	  'appearance': 1
-	}
-
-/***/ },
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var toUpperFirst = __webpack_require__(48)
-	var getPrefix    = __webpack_require__(49)
-	var properties   = __webpack_require__(43)
-
-	/**
-	 * Returns the given key prefixed, if the property is found in the prefixProps map.
-	 *
-	 * Does not test if the property supports the given value unprefixed.
-	 * If you need this, use './getPrefixed' instead
-	 */
-	module.exports = function(key, value){
-
-		if (!properties[key]){
-			return key
-		}
-
-		var prefix = getPrefix(key)
-
-		return prefix?
-					prefix + toUpperFirst(key):
-					key
-	}
-
-/***/ },
-/* 54 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getPrefix     = __webpack_require__(63)
-	var forcePrefixed = __webpack_require__(65)
+	var getPrefix     = __webpack_require__(62)
+	var forcePrefixed = __webpack_require__(63)
 	var el            = __webpack_require__(64)
 
 	var MEMORY = {}
@@ -5081,6 +5000,92 @@ return /******/ (function(modules) { // webpackBootstrap
 	    MEMORY[k] = value
 
 	    return value
+	}
+
+/***/ },
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var toUpperFirst = __webpack_require__(65)
+	var getPrefix    = __webpack_require__(62)
+	var el           = __webpack_require__(64)
+
+	var MEMORY = {}
+	var STYLE
+	var ELEMENT
+
+	module.exports = function(key, value){
+
+	    ELEMENT = ELEMENT || el()
+	    STYLE   = STYLE   || ELEMENT.style
+
+	    var k = key// + ': ' + value
+
+	    if (MEMORY[k]){
+	        return MEMORY[k]
+	    }
+
+	    var prefix
+	    var prefixed
+
+	    if (!(key in STYLE)){//we have to prefix
+
+	        prefix = getPrefix('appearance')
+
+	        if (prefix){
+	            prefixed = prefix + toUpperFirst(key)
+
+	            if (prefixed in STYLE){
+	                key = prefixed
+	            }
+	        }
+	    }
+
+	    MEMORY[k] = key
+
+	    return key
+	}
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = {
+	  'alignItems': 1,
+	  'justifyContent': 1,
+	  'flex': 1,
+	  'flexFlow': 1,
+
+	  'userSelect': 1,
+	  'transform': 1,
+	  'transition': 1,
+	  'transformOrigin': 1,
+	  'transformStyle': 1,
+	  'transitionProperty': 1,
+	  'transitionDuration': 1,
+	  'transitionTimingFunction': 1,
+	  'transitionDelay': 1,
+	  'borderImage': 1,
+	  'borderImageSlice': 1,
+	  'boxShadow': 1,
+	  'backgroundClip': 1,
+	  'backfaceVisibility': 1,
+	  'perspective': 1,
+	  'perspectiveOrigin': 1,
+	  'animation': 1,
+	  'animationDuration': 1,
+	  'animationName': 1,
+	  'animationDelay': 1,
+	  'animationDirection': 1,
+	  'animationIterationCount': 1,
+	  'animationTimingFunction': 1,
+	  'animationPlayState': 1,
+	  'animationFillMode': 1,
+	  'appearance': 1
 	}
 
 /***/ },
@@ -5139,7 +5144,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var hasOwn   = __webpack_require__(60)
+	var hasOwn   = __webpack_require__(59)
 	var VALIDATE = __webpack_require__(56)
 
 	module.exports = function(REGION){
@@ -5542,16 +5547,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getInstantiatorFunction = __webpack_require__(69)
-
-	module.exports = function(fn, args){
-		return getInstantiatorFunction(args.length)(fn, args)
-	}
-
-/***/ },
-/* 60 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict'
 
 	var hasOwn = Object.prototype.hasOwnProperty
@@ -5590,6 +5585,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = curry(function(object, property){
 	    return hasOwn.call(object, property)
 	})
+
+/***/ },
+/* 60 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var getInstantiatorFunction = __webpack_require__(69)
+
+	module.exports = function(fn, args){
+		return getInstantiatorFunction(args.length)(fn, args)
+	}
 
 /***/ },
 /* 61 */
@@ -5904,19 +5909,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = function(str){
-		return str?
-				str.charAt(0).toUpperCase() + str.slice(1):
-				''
-	}
-
-/***/ },
-/* 63 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var toUpperFirst = __webpack_require__(62)
+	var toUpperFirst = __webpack_require__(65)
 	var prefixes     = ["ms", "Moz", "Webkit", "O"]
 
 	var el = __webpack_require__(64)
@@ -5950,6 +5943,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
+/* 63 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var toUpperFirst = __webpack_require__(65)
+	var getPrefix    = __webpack_require__(62)
+	var properties   = __webpack_require__(54)
+
+	/**
+	 * Returns the given key prefixed, if the property is found in the prefixProps map.
+	 *
+	 * Does not test if the property supports the given value unprefixed.
+	 * If you need this, use './getPrefixed' instead
+	 */
+	module.exports = function(key, value){
+
+		if (!properties[key]){
+			return key
+		}
+
+		var prefix = getPrefix(key)
+
+		return prefix?
+					prefix + toUpperFirst(key):
+					key
+	}
+
+/***/ },
 /* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -5977,27 +5999,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var toUpperFirst = __webpack_require__(62)
-	var getPrefix    = __webpack_require__(63)
-	var properties   = __webpack_require__(52)
-
-	/**
-	 * Returns the given key prefixed, if the property is found in the prefixProps map.
-	 *
-	 * Does not test if the property supports the given value unprefixed.
-	 * If you need this, use './getPrefixed' instead
-	 */
-	module.exports = function(key, value){
-
-		if (!properties[key]){
-			return key
-		}
-
-		var prefix = getPrefix(key)
-
-		return prefix?
-					prefix + toUpperFirst(key):
-					key
+	module.exports = function(str){
+		return str?
+				str.charAt(0).toUpperCase() + str.slice(1):
+				''
 	}
 
 /***/ },

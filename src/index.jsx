@@ -240,6 +240,8 @@ var DropDownButton = React.createClass({
             'br-tr'
         ]
 
+        var prevOnChildClick = menuProps.onChildClick
+
         assign(menuProps, {
             // onClick    : this.onMenuItemClick.bind(this, props),
 			onChildClick    : this.onMenuChildClick.bind(this, props),
@@ -251,6 +253,7 @@ var DropDownButton = React.createClass({
         var menu
 
         if (props.menu){
+            prevOnChildClick = props.menu.onChildClick || prevOnChildClick
             menu = cloneWithProps(props.menu, menuProps)
         } else {
             menu = typeof props.menuFactory == 'function'? props.menuFactory(menuProps): undefined
@@ -259,6 +262,8 @@ var DropDownButton = React.createClass({
                 menu = MenuFactory(menuProps)
             }
         }
+
+        this.prevOnChildClick = prevOnChildClick
 
         this.setMenu(menu)
     },
@@ -316,8 +321,8 @@ var DropDownButton = React.createClass({
             return
         }
 
-        if (this.props.menuProps){
-        	;(this.props.menuProps.onChildClick || emptyFn)(event, itemProps)
+        if (typeof this.prevOnChildClick == 'function'){
+        	this.prevOnChildClick(event, itemProps)
         }
 
         event.nativeEvent.clickInsideMenu = true
