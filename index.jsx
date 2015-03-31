@@ -1,67 +1,99 @@
 'use strict';
 
-var React = require('react')
-var Button = require('./src')
-var B = require('react-button')
+var React    = require('react')
+var DDButton = require('./src')
+var Button   = require('react-button')
+var Menu     = require('react-menus/src')
 
-var items = [
+var saveItems = [
     {
-        label: 'Save',
-        items: [
-            {
-                label: 'as pdf',
-                fn: function() {
-                    console.log('as PDF')
-                }
-            }
-        ]
+        label: 'Text'
     },
     {
-        label: 'Export'
+        label: 'PDF'
+    },
+    {
+        label: 'Office',
+        items: [
+            {
+                label: 'MS Office'
+            },
+            {
+                label: 'Open Office'
+            }
+        ]
     }
 ]
 
-var Menu = require('react-menus/src')
-
-function great(){
-    console.log('well done')
+function saveAsClick(event, itemProps){
+    console.log('Clicked: ', itemProps.data.label, ' at index ', itemProps.index)
 }
 
-var menu = <Menu >
+var exportItems = [
+    {
+        label: 'As PDF',
+        onClick: function(){
+            console.log('Export as PDF!')
+        }
+    },
+    '-',
+    {
+        label: 'As Proprietary',
+        items: [
+            {
+                label: 'Office',
+                items: [
+                    {
+                        label: 'MS Office'
+                    },
+                    {
+                        label: 'Open Office'
+                    }
+                ]
+            }
+        ]
+    }
+]
+
+var importItems = [
+    {
+        label: 'From CSV'
+    },
+    {
+        label: 'From Excel',
+        disabled: true
+    },
+    {
+        label: 'From text'
+    }
+]
+
+var openMenu = <Menu >
         <Menu.Item>
-            <Menu.Item.Cell onClick={great}>great</Menu.Item.Cell>
+            <Menu.Item.Cell>Open later</Menu.Item.Cell>
+        </Menu.Item>
+
+        <Menu.Item>
+            <Menu.Item.Cell>Open image</Menu.Item.Cell>
         </Menu.Item>
     </Menu>
 
+
 var App = React.createClass({
-
-    onChange: function(value){
-        VALUE = value
-        this.setState({})
-    },
-
     render: function() {
-
-        var style = {
-            width: '50%'
-        }
-
-        function fn(value){
-            console.log('clicked')
-        }
-
-        function arrowClick(){
-            // console.log('arrow click')
-        }
-
         return (
             <div className="App" style={{padding: 10}}>
+                <DDButton arrowPosition="left" items={saveItems} onMenuClick={saveAsClick}>
+                    Save as
+                </DDButton>
 
-                <Button arrowPosition="left" xdisabled={true} items={items} onClick={fn} style={{xwidth: 50}} label="hello world">
+                <DDButton items={exportItems}>
+                    Export
+                </DDButton>
 
-                </Button>
-                <Button href="#test" menu={menu}>world</Button>
-                <B href="#test" menu={menu}>world</B>
+                <DDButton disabled>Download - disabled</DDButton>
+                <DDButton items={importItems}>Import</DDButton>
+                <DDButton menu={openMenu}>Open</DDButton>
             </div>
         )
     }

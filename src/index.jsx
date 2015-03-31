@@ -1,25 +1,36 @@
 'use strict';
 
 var React  = require('react')
-var Button = require('react-button')
 var assign = require('object-assign')
-var cloneWithProps = require('react-clonewithprops')
-var hasTouch = require('has-touch')
+var Button = require('react-button/src')
 
-var Menu   = require('react-menus')
+// debugger
+
+var cloneWithProps = require('react-clonewithprops')
+var hasTouch       = require('has-touch')
+
+var Menu   = require('react-menus/src')
 var MenuFactory = React.createFactory(Menu)
 
 function emptyFn(){}
 
 var DISPLAY_NAME = 'ReactDropDownButton'
 
-module.exports = React.createClass({
+var THEME = assign({}, Button.themes)
+
+THEME.default = assign({}, THEME.default, {
+    openedStyle: {
+        background: 'linear-gradient(to bottom, rgb(162,210,246) 0%,rgb(151,204,245) 50%,rgb(154,206,246) 100%)',
+        color: 'white'
+    }
+})
+
+var DropDownButton = React.createClass({
 
     displayName: DISPLAY_NAME,
 
     getInitialState: function(){
-    	return {
-    	}
+    	return {}
     },
 
     getDefaultProps: function(){
@@ -27,20 +38,12 @@ module.exports = React.createClass({
             'data-display-name': DISPLAY_NAME,
             stopClickPropagation: false,
             hideMenuOnClick: true,
+            smartArrowPadding: true,
 
     		defaultStyle: {
     			boxSizing: 'border-box',
     			verticalAlign: 'top',
-    			//theme props
 				padding: 5
-    		},
-
-    		// defaultOverStyle: {},
-
-    		defaultOpenedStyle: {
-    		    //theme properties
-    		    background: 'rgb(118, 181, 231)',
-    		    color: 'white'
     		},
 
     		defaultArrowStyle: {
@@ -51,7 +54,7 @@ module.exports = React.createClass({
 
     		defaultMenuStyle: {},
 
-    		// alignOffset: { left: 0, top: -1 },
+    		alignOffset: { left: 0, top: 1 },
     		enforceNonStatic: true,
     		arrowPosition: 'right'
     	}
@@ -61,18 +64,57 @@ module.exports = React.createClass({
 
     	var props = this.prepareProps(this.props, this.state)
 
-        return <Button ref="button" {...props} />
+        var wrapperProps = this.prepareWrapperProps(props)
+
+        return <div {...wrapperProps}>
+            <Button themes={this.constructor.themes} ref="button" {...props} />
+            {this.state.menu}
+        </div>
+    },
+
+    handleWrapperClick: function(props, event) {
+
+        if (event && event.nativeEvent && event.nativeEvent.clickInsideMenu){
+            //there was a click inside the menu,
+            //so don't count that as a click in the button
+            return
+        }
+
+        props.stopClickPropagation && event.stopPropagation()
+
+        this.ignoreClick(function(){
+            //in order to get picked up after the click event has propagated to the window
+            this.toggleMenu(props)
+        })
+    },
+
+    prepareWrapperProps: function(props) {
+        var defaultWrapperStyle = {
+            verticalAlign: 'top',
+            display: props.block? 'block': 'inline-block'
+        }
+
+        var wrapperStyle = assign({}, defaultWrapperStyle, props.wrapperStyle)
+
+        //enforce relative position so that menu gets rendered correctly
+        wrapperStyle.position = wrapperStyle.position == 'absolute'? wrapperStyle.position: 'relative'
+        wrapperStyle.overflow = 'visible'
+
+        var wrapperProps = assign({
+            style: wrapperStyle
+        }, props.wrapperProps)
+
+        wrapperProps.onClick = this.handleWrapperClick.bind(this, props)
+
+        return wrapperProps
     },
 
     prepareProps: function(thisProps, state) {
     	var props = assign({}, thisProps)
 
     	props.style = this.prepareStyle(props)
-    	props.onClick = this.handleClick.bind(this, props)
+        props.addStateStyle = this.addStateStyle
     	props.renderChildren = this.renderChildren.bind(this, props)
-
-        props.onDefaultStyleReady = this.onDefaultStyleReady.bind(this, props)
-        props.onStyleReady        = this.onStyleReady.bind(this, props)
 
     	return props
     },
@@ -83,27 +125,13 @@ module.exports = React.createClass({
 
     	delete props.defaultStyle
 
-    	//enforce relative position so that menu gets rendered correctly
-    	style.position = style.position == 'absolute'? style.position: 'relative'
-    	style.overflow = 'visible'
-
     	return style
     },
 
-    onDefaultStyleReady: function(props, style) {
-    	if (this.menu){
-    		assign(style, props.defaultOpenedStyle)
-    	}
-
-    	;(this.props.onDefaultStyleReady || emptyFn)(style)
-    },
-
-    onStyleReady: function(props, style) {
-    	if (this.menu){
-    		assign(style, props.openedStyle)
-    	}
-
-    	;(this.props.onStyleReady || emptyFn)(style)
+    addStateStyle: function(names) {
+        if (this.menu){
+            names.push('openedStyle')
+        }
     },
 
     renderChildren: function(props, children) {
@@ -117,7 +145,7 @@ module.exports = React.createClass({
     	}
 
     	var children = [
-            this.state.menu,
+            // this.state.menu,
     		leftArrow,
     		children,
     		rightArrow
@@ -160,24 +188,6 @@ module.exports = React.createClass({
     	return <span style={arrowStyle}>▼</span>
     },
 
-    handleClick: function(props, event) {
-
-        if (event && event.nativeEvent && event.nativeEvent.clickInsideMenu){
-            //there was a click inside the menu,
-            //so don't count that as a click in the button
-            return
-        }
-
-        props.stopClickPropagation && event.stopPropagation()
-
-    	;(this.props.onClick || emptyFn).apply(null, [].slice.call(arguments, 1))
-
-        this.ignoreClick(function(){
-            //in order to get picked up after the click event has propagated to the window
-    	    this.toggleMenu(props)
-        })
-    },
-
     toggleMenu: function(props) {
         if (this.menu){
             this.hideMenu()
@@ -206,7 +216,7 @@ module.exports = React.createClass({
     showMenu: function(props) {
         var target = props.getAlignTarget?
                         props.getAlignTarget.call(this):
-                        this.getDOMNode()
+                        this.refs.button.getDOMNode()
 
         this.removeClickListener()
 
@@ -231,7 +241,8 @@ module.exports = React.createClass({
         ]
 
         assign(menuProps, {
-			onClick    : this.onMenuItemClick.bind(this, props),
+            // onClick    : this.onMenuItemClick.bind(this, props),
+			onChildClick    : this.onMenuChildClick.bind(this, props),
 			alignOffset: props.alignOffset || menuProps.alignOffset,
 			alignTo    : target,
 			items      : menuProps.items || props.items
@@ -248,7 +259,6 @@ module.exports = React.createClass({
                 menu = MenuFactory(menuProps)
             }
         }
-
 
         this.setMenu(menu)
     },
@@ -295,9 +305,9 @@ module.exports = React.createClass({
         }
     },
 
-    onMenuItemClick: function(props, event, itemProps, index) {
+    onMenuChildClick: function(props, event, itemProps) {
 
-        if (index === undefined){
+        if (itemProps === undefined){
             //default click event propagated, not called by the menu cmp
             return
         }
@@ -307,19 +317,19 @@ module.exports = React.createClass({
         }
 
         if (this.props.menuProps){
-        	;(this.props.menuProps.onClick || emptyFn)(event, itemProps, index)
+        	;(this.props.menuProps.onChildClick || emptyFn)(event, itemProps)
         }
 
         event.nativeEvent.clickInsideMenu = true
 
-        ;(this.props.onMenuClick || emptyFn)(event, itemProps, index)
+        ;(this.props.onMenuClick || emptyFn)(event, itemProps)
 
         if (!this.props.hideMenuOnClick || event.nativeEvent.hideMenu === false || (itemProps && itemProps.data && itemProps.data.hideMenu === false)){
             this.ignoreClick()
         } else {
             //when menu is hidden, mouseleave from button is not triggered, so we trigger it manually
             this.menu && this.refs.button && this.refs.button.handleMouseLeave(props, event)
-            // this.hideMenu() - hideMenu will be called by onDocumentClick
+            this.hideMenu()
         }
     },
 
@@ -332,3 +342,7 @@ module.exports = React.createClass({
         }.bind(this), 0)
     }
 })
+
+DropDownButton.themes = THEME
+
+module.exports = DropDownButton
