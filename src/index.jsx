@@ -84,7 +84,7 @@ var DropDownButton = React.createClass({
                 button
     },
 
-    handleWrapperClick: function(props, event) {
+    onClick: function(props, event) {
 
         if (event && event.nativeEvent && event.nativeEvent.clickInsideMenu){
             //there was a click inside the menu,
@@ -116,8 +116,6 @@ var DropDownButton = React.createClass({
             style: wrapperStyle
         }, props.wrapperProps)
 
-        wrapperProps.onClick = this.handleWrapperClick.bind(this, props)
-
         return wrapperProps
     },
 
@@ -127,6 +125,8 @@ var DropDownButton = React.createClass({
     	props.style = this.prepareStyle(props)
         props.addStateStyle = this.addStateStyle
     	props.renderChildren = this.renderChildren.bind(this, props)
+
+        props.onClick = this.handleClick.bind(this, props)
 
     	return props
     },
@@ -138,6 +138,14 @@ var DropDownButton = React.createClass({
     	delete props.defaultStyle
 
     	return style
+    },
+
+    handleClick: function(props, event) {
+        var args = [].slice.call(arguments, 1)
+
+        ;(this.props.onClick || emptyFn).apply(null, args)
+
+        this.onClick(props, event)
     },
 
     addStateStyle: function(names) {

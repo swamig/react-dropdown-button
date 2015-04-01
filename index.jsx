@@ -81,9 +81,13 @@ var openMenu = <Menu >
 
 var App = React.createClass({
     render: function() {
+
+        function onClick(){
+            console.log('clicked', arguments);
+        }
         return (
             <div className="App" style={{padding: 10, marginTop: 300}}>
-                <DDButton arrowPosition="left" items={saveItems} onMenuClick={saveAsClick}>
+                <DDButton arrowPosition="left" items={saveItems} onMenuClick={saveAsClick} onClick={onClick}>
                     Save as
                 </DDButton>
 
