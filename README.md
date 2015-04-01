@@ -17,6 +17,10 @@ The drop-down button uses two other React components:
  * [react-button](http://github.com/zippyui/react-button)
  * [react-menus](http://github.com/zippyui/react-menus)
 
+It smartly places the drop-down menu to fit into the document. You can customize how the menu is aligned to the button. With one function, you can get a click in the menu at any nesting level.
+
+Worth trying out, [see the demo page](http://zippyui.github.io/react-dropdown-button/).
+
 ## Changelog
 
 See [Changelog](./CHANGELOG.md)
@@ -61,9 +65,25 @@ Also see [zippyui/react-button](github.com/zippyui/react-button)
 You have the same props as for the [react-button, so see docs](http://github.com/zippyui/react-button).
 Besides the button specific props, you can specify the `items` prop as an array of objects to be passed to the menu component.
 
- * items: Array - an array of menu items for the menu of this drop-down button
- * menuProps: Object - props to be passed to the menu component
- * menu: ReactElement - instead of `menuProps`, you can directly pass in a menu instance
+ * `items`: Array - an array of menu items for the menu of this drop-down button
+ * `menuProps`: Object - props to be passed to the menu component
+ * `menu`: ReactElement - instead of `menuProps`, you can directly pass in a menu instance
+ * `onMenuClick`: Function(event, itemProps) - called when a menu item, at any nesting level has been clicked.
+
+ 	Takes the following args:
+
+ 	 * event - The click event
+ 	 * itemProps - an object which represents the props with which the menu item has been rendered. You can check `itemProps.index` to take the index of the item in it's parent menu.
+ 	 		If the drop-down button has been given a `items` array, the `itemProps` object also has a `data` property, which is the item object.
+
+Besides this, every menu item can have an `onClick: Function` prop that is called when that item is clicked.
+
+ * `alignPositions`: Array<String>/String - you can specify how you want the menu to be aligned to the button. By default, the align position is 'tl-bl', which means: align the top-left corner of the menu to the bottom-left corner of the button. Examples of valid values: `'br-tr'` - align the bottom-right of the menu to the top-right of the button; `'tl-tr'` - align the top-left of the menu to the top-right of the button.
+ In case you specify an array of alignPositions, it will try all of those until one is found for which there is enough space in the document element. If, for example, the first position would render the menu outside the document, then the second position is used, and so on
+ * `hideMenuOnClick`: Boolean - defaults to `true`, which means that when a menu item is clicked, the drop-down menu is hidden. Specify `false` if you don't want this behavior
+ * `arrowPosition`: String - either `'right'` (the default), or `'left'`
+ * `alignOffset`: Object({left, top}) - specify a different offset to align the menu to a different distance from the button.
+ * `block`: Boolean - defaults to `false` - whether to render the button as block level.
 
 ## Contributing
 

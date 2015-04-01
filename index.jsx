@@ -82,12 +82,12 @@ var openMenu = <Menu >
 var App = React.createClass({
     render: function() {
         return (
-            <div className="App" style={{padding: 10}}>
+            <div className="App" style={{padding: 10, marginTop: 300}}>
                 <DDButton arrowPosition="left" items={saveItems} onMenuClick={saveAsClick}>
                     Save as
                 </DDButton>
 
-                <DDButton items={exportItems}>
+                <DDButton items={exportItems} alignPositions={'br-tr'}>
                     Export
                 </DDButton>
 
