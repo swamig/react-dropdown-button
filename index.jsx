@@ -146,6 +146,10 @@ var App = React.createClass({
                 <Button disabled>Download - disabled</Button>
                 <Button onMenuClick={onClick} items={importItems}>Import</Button>
                 <Button menu={openMenu}>Open</Button>
+
+                <p>
+                    For a split-button see <a href="http://github.com/zippyui/react-split-button">zippyui/react-split-button</a>
+                </p>
             </div>
         )
     }
