@@ -130,7 +130,7 @@ var App = React.createClass({
             <div className="App" style={{padding: 10}}>
                 <p>
                     <h2>Demo for react-dropdown-button</h2>
-                    See <a href="http://github.com/zippyui/react-dropdown-button">zippyui/react-dropdown-button</a> and <a href="https://www.npmjs.com/package/react-dropdown-button">npm/package/react-dropdown-button</a>
+                    See <a href="http://github.com/zippyui/react-dropdown-button">github.com/zippyui/react-dropdown-button</a> and <a href="https://www.npmjs.com/package/react-dropdown-button">npmjs.com/package/react-dropdown-button</a>
                 </p>
                 <p>
                     To see something happening on click, open the developer console
@@ -148,7 +148,7 @@ var App = React.createClass({
                 <Button menu={openMenu}>Open</Button>
 
                 <p>
-                    For a split-button see <a href="http://github.com/zippyui/react-split-button">zippyui/react-split-button</a>
+                    For a split-button see <a href="http://github.com/zippyui/react-split-button">github.com/zippyui/react-split-button</a>
                 </p>
             </div>
         )
