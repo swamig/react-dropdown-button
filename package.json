@@ -1,8 +1,9 @@
 {
   "name": "react-dropdown-button",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A carefully crafted drop-down button for React",
   "author": "ZippyUI <contact@zippyui.com>",
+
   "main": "lib/index.js",
   "scripts": {
     "test": "make",
