@@ -84,6 +84,14 @@ Besides this, every menu item can have an `onClick: Function` prop that is calle
  * `arrowPosition`: String - either `'right'` (the default), or `'left'`
  * `alignOffset`: Object({left, top}) - specify a different offset to align the menu to a different distance from the button.
  * `block`: Boolean - defaults to `false` - whether to render the button as block level.
+ * `renderMenu: Boolean` - if you will specify false, the button will not render the drop-down menu. This can be useful if you choose to render the menu at a higher level, by using the `onMenuChange` callback prop
+ * `onMenuChange: Function(menu, thisButton)` - called whenever the menu should be shown or hidden. NOTE: menu can either be a `ReactElement` or a null reference, depending on whether the menu should be displayed or not
+
+The drop-down button contains two items: the button and the menu. Those items are wrapped inside a `<div>`, called the **wrapper**.
+
+ * `wrapperFactory: Function(props)` - a factory function to return a wrapper around the button and the menu. If undefined is returned, it is assumed you just wanted to modify some wrapper props before rendering, and a `<div>` will be rendered with these props.
+ * `wrapperStyle`: Object - a style object for the button wrapper
+ * `wrapperProps`: Object - props to be applied to the wrapper
 
 ## Contributing
 
