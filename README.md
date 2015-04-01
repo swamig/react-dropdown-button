@@ -17,7 +17,7 @@ The drop-down button uses two other React components:
  * [react-button](http://github.com/zippyui/react-button)
  * [react-menus](http://github.com/zippyui/react-menus)
 
-It smartly places the drop-down menu to fit into the document. You can customize how the menu is aligned to the button. With one function, you can get a click in the menu at any nesting level.
+It smartly places the drop-down menu to fit into the document. You can customize how the menu is aligned to the button. With one function, you can respond to a click in the menu at any nesting level.
 
 Worth trying out, [see the demo page](http://zippyui.github.io/react-dropdown-button/).
 
