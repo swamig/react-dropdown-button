@@ -4,9 +4,7 @@ var React  = require('react')
 var assign = require('object-assign')
 var Button = require('react-button')
 
-// debugger
-
-var cloneWithProps = require('react-clonewithprops')
+var cloneWithProps = React.cloneElement || require('react-clonewithprops')
 var hasTouch       = require('has-touch')
 
 var Menu   = require('react-menus')

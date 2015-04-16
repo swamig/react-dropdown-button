@@ -3,7 +3,6 @@
   "version": "1.0.10",
   "description": "A carefully crafted drop-down button for React",
   "author": "ZippyUI <contact@zippyui.com>",
-
   "main": "lib/index.js",
   "scripts": {
     "test": "make",
@@ -54,6 +53,6 @@
     "object-assign": "^2.0.0",
     "react-button": "^1.2.1",
     "react-clonewithprops": "^1.0.1",
-    "react-menus": "^1.1.0"
+    "react-menus": "^1.1.1"
   }
 }
