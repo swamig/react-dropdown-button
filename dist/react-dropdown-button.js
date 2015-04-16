@@ -57,13 +57,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	/** @jsx React.DOM */'use strict';
 
 	var React  = __webpack_require__(1)
-	var assign = __webpack_require__(4)
+	var assign = __webpack_require__(2)
 	var Button = __webpack_require__(6)
 
-	// debugger
-
-	var cloneWithProps = __webpack_require__(2)
-	var hasTouch       = __webpack_require__(3)
+	var cloneWithProps = React.cloneElement || __webpack_require__(3)
+	var hasTouch       = __webpack_require__(4)
 
 	var Menu   = __webpack_require__(5)
 	var MenuFactory = React.createFactory(Menu)
@@ -442,6 +440,38 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	function ToObject(val) {
+		if (val == null) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+
+		return Object(val);
+	}
+
+	module.exports = Object.assign || function (target, source) {
+		var from;
+		var keys;
+		var to = ToObject(target);
+
+		for (var s = 1; s < arguments.length; s++) {
+			from = arguments[s];
+			keys = Object.keys(Object(from));
+
+			for (var i = 0; i < keys.length; i++) {
+				to[keys[i]] = from[keys[i]];
+			}
+		}
+
+		return to;
+	};
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 	var React    = __webpack_require__(1)
 	  , hasOwn   = Object.prototype.hasOwnProperty
 	  , version  = React.version.split('.').map(parseFloat)
@@ -514,43 +544,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {module.exports = 'ontouchstart' in global || (global.DocumentTouch && document instanceof DocumentTouch)
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	function ToObject(val) {
-		if (val == null) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-
-		return Object(val);
-	}
-
-	module.exports = Object.assign || function (target, source) {
-		var from;
-		var keys;
-		var to = ToObject(target);
-
-		for (var s = 1; s < arguments.length; s++) {
-			from = arguments[s];
-			keys = Object.keys(Object(from));
-
-			for (var i = 0; i < keys.length; i++) {
-				to[keys[i]] = from[keys[i]];
-			}
-		}
-
-		return to;
-	};
-
 
 /***/ },
 /* 5 */
@@ -578,8 +576,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict'
 
 	var React     = __webpack_require__(1)
-	var assign    = __webpack_require__(4)
-	var normalize = __webpack_require__(11)
+	var assign    = __webpack_require__(2)
+	var normalize = __webpack_require__(20)
 
 	function emptyFn(){}
 
@@ -1121,22 +1119,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	function emptyFn(){}
 
 	var React      = __webpack_require__(1)
-	var assign     = __webpack_require__(4)
+	var assign     = __webpack_require__(2)
 	var Region     = __webpack_require__(22)
 	var inTriangle = __webpack_require__(23)
-	var hasTouch = __webpack_require__(3)
+	var hasTouch = __webpack_require__(4)
 
-	var normalize = __webpack_require__(33)
+	var normalize = __webpack_require__(29)
 
-	var getMenuOffset = __webpack_require__(12)
+	var getMenuOffset = __webpack_require__(11)
 	var getConstrainRegion = __webpack_require__(21)
-	var getItemStyleProps = __webpack_require__(13)
-	var renderSubMenu     = __webpack_require__(14)
-	var renderChildren    = __webpack_require__(15)
-	var prepareItem       = __webpack_require__(16)
+	var getItemStyleProps = __webpack_require__(12)
+	var renderSubMenu     = __webpack_require__(13)
+	var renderChildren    = __webpack_require__(14)
+	var prepareItem       = __webpack_require__(15)
 
-	var propTypes = __webpack_require__(17)
-	var ScrollContainer = __webpack_require__(18)
+	var propTypes = __webpack_require__(16)
+	var ScrollContainer = __webpack_require__(17)
 
 	var MenuItem = __webpack_require__(10)
 
@@ -1679,7 +1677,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	})
 
-	MenuClass.themes = __webpack_require__(19)
+	MenuClass.themes = __webpack_require__(18)
 
 	module.exports = MenuClass
 
@@ -1690,7 +1688,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React  = __webpack_require__(1)
-	var assign =__webpack_require__(4)
+	var assign =__webpack_require__(2)
 
 	var MenuItemCell = React.createClass({
 
@@ -1752,7 +1750,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React  = __webpack_require__(1)
-	var assign = __webpack_require__(4)
+	var assign = __webpack_require__(2)
 
 	var emptyFn = function(){}
 
@@ -1823,13 +1821,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React         = __webpack_require__(1)
-	var assign        = __webpack_require__(4)
-	var normalize     = __webpack_require__(33)
+	var assign        = __webpack_require__(2)
+	var normalize     = __webpack_require__(29)
 	var EVENT_NAMES   = __webpack_require__(24)
 
-	var getMenuOffset = __webpack_require__(12)
+	var getMenuOffset = __webpack_require__(11)
 
-	var prepareChildren = __webpack_require__(20)
+	var prepareChildren = __webpack_require__(19)
 
 	var Menu = __webpack_require__(7)
 	var MenuItemCell = __webpack_require__(8)
@@ -2141,77 +2139,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var hasOwn      = __webpack_require__(29)
-	var getPrefixed = __webpack_require__(30)
-
-	var map      = __webpack_require__(31)
-	var plugable = __webpack_require__(32)
-
-	function plugins(key, value){
-
-		var result = {
-			key  : key,
-			value: value
-		}
-
-		;(RESULT.plugins || []).forEach(function(fn){
-
-			var tmp = map(function(res){
-				return fn(key, value, res)
-			}, result)
-
-			if (tmp){
-				result = tmp
-			}
-		})
-
-		return result
-	}
-
-	function normalize(key, value){
-
-		var result = plugins(key, value)
-
-		return map(function(result){
-			return {
-				key  : getPrefixed(result.key, result.value),
-				value: result.value
-			}
-		}, result)
-
-		return result
-	}
-
-	var RESULT = function(style){
-
-		var k
-		var item
-		var result = {}
-
-		for (k in style) if (hasOwn(style, k)){
-			item = normalize(k, style[k])
-
-			if (!item){
-				continue
-			}
-
-			map(function(item){
-				result[item.key] = item.value
-			}, item)
-		}
-
-		return result
-	}
-
-	module.exports = plugable(RESULT)
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Region = __webpack_require__(22)
+	var Region       = __webpack_require__(22)
 	var selectParent = __webpack_require__(34)
 
 	module.exports = function(domNode){
@@ -2231,12 +2159,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var assign = __webpack_require__(4)
+	var assign = __webpack_require__(2)
 
 	module.exports = function(props, state){
 
@@ -2258,14 +2186,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var Region           = __webpack_require__(22)
-	var assign           = __webpack_require__(4)
-	var cloneWithProps   = __webpack_require__(2)
+	var assign           = __webpack_require__(2)
+	var cloneWithProps   = __webpack_require__(3)
 	var getPositionStyle = __webpack_require__(25)
 
 	module.exports = function(props, state) {
@@ -2297,7 +2225,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 15 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2305,8 +2233,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(1)
 	var MenuItemCell = __webpack_require__(8)
 
-	var cloneWithProps = __webpack_require__(2)
-	var assign         = __webpack_require__(4)
+	var cloneWithProps = __webpack_require__(3)
+	var assign         = __webpack_require__(2)
 
 	function emptyFn(){}
 
@@ -2394,13 +2322,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 16 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React  = __webpack_require__(1)
-	var assign = __webpack_require__(4)
+	var assign = __webpack_require__(2)
 
 	var renderCells     = __webpack_require__(26)
 	var MenuItem        = __webpack_require__(10)
@@ -2442,7 +2370,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2466,13 +2394,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 
 	var React    = __webpack_require__(1)
-	var assign   = __webpack_require__(4)
+	var assign   = __webpack_require__(2)
 	var buffer   = __webpack_require__(35)
 
 	var Scroller = __webpack_require__(27)
@@ -2714,7 +2642,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	})
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2747,7 +2675,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2756,7 +2684,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Menu         = __webpack_require__(7)
 	var MenuItemCell = __webpack_require__(8)
 	var renderCell   = __webpack_require__(28)
-	var cloneWithProps = __webpack_require__(2)
+	var cloneWithProps = __webpack_require__(3)
 
 	module.exports = function(props) {
 
@@ -2800,6 +2728,76 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var hasOwn      = __webpack_require__(30)
+	var getPrefixed = __webpack_require__(31)
+
+	var map      = __webpack_require__(32)
+	var plugable = __webpack_require__(33)
+
+	function plugins(key, value){
+
+		var result = {
+			key  : key,
+			value: value
+		}
+
+		;(RESULT.plugins || []).forEach(function(fn){
+
+			var tmp = map(function(res){
+				return fn(key, value, res)
+			}, result)
+
+			if (tmp){
+				result = tmp
+			}
+		})
+
+		return result
+	}
+
+	function normalize(key, value){
+
+		var result = plugins(key, value)
+
+		return map(function(result){
+			return {
+				key  : getPrefixed(result.key, result.value),
+				value: result.value
+			}
+		}, result)
+
+		return result
+	}
+
+	var RESULT = function(style){
+
+		var k
+		var item
+		var result = {}
+
+		for (k in style) if (hasOwn(style, k)){
+			item = normalize(k, style[k])
+
+			if (!item){
+				continue
+			}
+
+			map(function(item){
+				result[item.key] = item.value
+			}, item)
+		}
+
+		return result
+	}
+
+	module.exports = plugable(RESULT)
+
+/***/ },
 /* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -2831,7 +2829,187 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(40)
+	'use strict';
+
+	var Region = __webpack_require__(47)
+
+	__webpack_require__(36)
+	__webpack_require__(37)
+
+	var COMPUTE_ALIGN_REGION = __webpack_require__(38)
+
+	/**
+	 * region-align module exposes methods for aligning {@link Element} and {@link Region} instances
+	 *
+	 * The #alignTo method aligns this to the target element/region using the specified positions. See #alignTo for a graphical example.
+	 *
+	 *
+	 *      var div = Element.select('div.first')
+	 *
+	 *      div.alignTo(Element.select('body') , 'br-br')
+	 *
+	 *      //aligns the div to be in the bottom-right corner of the body
+	 *
+	 * Other useful methods
+	 *
+	 *  * {@link #alignRegions} - aligns a given source region to a target region
+	 *  * {@link #COMPUTE_ALIGN_REGION} - given a source region and a target region, and alignment positions, returns a clone of the source region, but aligned to satisfy the given alignments
+	 */
+
+
+	/**
+	 * Aligns sourceRegion to targetRegion. It modifies the sourceRegion in order to perform the correct alignment.
+	 * See #COMPUTE_ALIGN_REGION for details and examples.
+	 *
+	 * This method calls #COMPUTE_ALIGN_REGION passing to it all its arguments. The #COMPUTE_ALIGN_REGION method returns a region that is properly aligned.
+	 * If this returned region position/size differs from sourceRegion, then the sourceRegion is modified to be an exact copy of the aligned region.
+	 *
+	 * @inheritdoc #COMPUTE_ALIGN_REGION
+	 * @return {String} the position used for alignment
+	 */
+	Region.alignRegions = function(sourceRegion, targetRegion, positions, config){
+
+	    var result        = COMPUTE_ALIGN_REGION(sourceRegion, targetRegion, positions, config)
+	    var alignedRegion = result.region
+
+	    if ( !alignedRegion.equals(sourceRegion) ) {
+	        sourceRegion.setRegion(alignedRegion)
+	    }
+
+	    return result.position
+
+	}
+
+	    /**
+	     *
+	     * The #alignTo method aligns this to the given target region, using the specified alignment position(s).
+	     * You can also specify a constrain for the alignment.
+	     *
+	     * Example
+	     *
+	     *      BIG
+	     *      ________________________
+	     *      |  _______              |
+	     *      | |       |             |
+	     *      | |   A   |             |
+	     *      | |       |      _____  |
+	     *      | |_______|     |     | |
+	     *      |               |  B  | |
+	     *      |               |     | |
+	     *      |_______________|_____|_|
+	     *
+	     * Assume the *BIG* outside rectangle is our constrain region, and you want to align the *A* rectangle
+	     * to the *B* rectangle. Ideally, you'll want their tops to be aligned, and *A* to be placed at the right side of *B*
+	     *
+	     *
+	     *      //so we would align them using
+	     *
+	     *      A.alignTo(B, 'tl-tr', { constrain: BIG })
+	     *
+	     * But this would result in
+	     *
+	     *       BIG
+	     *      ________________________
+	     *      |                       |
+	     *      |                       |
+	     *      |                       |
+	     *      |                _____ _|_____
+	     *      |               |     | .     |
+	     *      |               |  B  | . A   |
+	     *      |               |     | .     |
+	     *      |_______________|_____|_._____|
+	     *
+	     *
+	     * Which is not what we want. So we specify an array of options to try
+	     *
+	     *      A.alignTo(B, ['tl-tr', 'tr-tl'], { constrain: BIG })
+	     *
+	     * So by this we mean: try to align A(top,left) with B(top,right) and stick to the BIG constrain. If this is not possible,
+	     * try the next option: align A(top,right) with B(top,left)
+	     *
+	     * So this is what we end up with
+	     *
+	     *      BIG
+	     *      ________________________
+	     *      |                       |
+	     *      |                       |
+	     *      |                       |
+	     *      |        _______ _____  |
+	     *      |       |       |     | |
+	     *      |       |   A   |  B  | |
+	     *      |       |       |     | |
+	     *      |_______|_______|_____|_|
+	     *
+	     *
+	     * Which is a lot better!
+	     *
+	     * @param {Element/Region} target The target to which to align this alignable.
+	     *
+	     * @param {String[]/String} positions The positions for the alignment.
+	     *
+	     * Example:
+	     *
+	     *      'br-tl'
+	     *      ['br-tl','br-tr','cx-tc']
+	     *
+	     * This method will try to align using the first position. But if there is a constrain region, that position might not satisfy the constrain.
+	     * If this is the case, the next positions will be tried. If one of them satifies the constrain, it will be used for aligning and it will be returned from this method.
+	     *
+	     * If no position matches the contrain, the one with the largest intersection of the source region with the constrain will be used, and this alignable will be resized to fit the constrain region.
+	     *
+	     * @param {Object} config A config object with other configuration for this method
+	     *
+	     * @param {Array[]/Object[]/Object} config.offset The offset to use for aligning. If more that one offset is specified, then offset at a given index is used with the position at the same index.
+	     *
+	     * An offset can have the following form:
+	     *
+	     *      [left_offset, top_offset]
+	     *      {left: left_offset, top: top_offset}
+	     *      {x: left_offset, y: top_offset}
+	     *
+	     * You can pass one offset or an array of offsets. In case you pass just one offset,
+	     * it cannot have the array form, so you cannot call
+	     *
+	     *      this.alignTo(target, positions, [10, 20])
+	     *
+	     * If you do, it will not be considered. Instead, please use
+	     *
+	     *      this.alignTo(target, positions, {x: 10, y: 20})
+	     *
+	     * Or
+	     *
+	     *      this.alignTo(target, positions, [[10, 20]] )
+	     *
+	     * @param {Boolean/Element/Region} config.constrain If boolean, target will be constrained to the document region, otherwise,
+	     * getRegion will be called on this argument to determine the region we need to constrain to.
+	     *
+	     * @param {Boolean/Object} config.sync Either boolean or an object with {width, height}. If it is boolean,
+	     * both width and height will be synced. If directions are specified, will only sync the direction which is specified as true
+	     *
+	     * @return {String}
+	     *
+	     */
+	Region.prototype.alignTo = function(target, positions, config){
+
+	    config = config || {}
+
+	    var sourceRegion = this
+	    var targetRegion = Region.from(target)
+
+	    var result = COMPUTE_ALIGN_REGION(sourceRegion, targetRegion, positions, config)
+	    var resultRegion = result.region
+
+	    if (!resultRegion.equalsSize(sourceRegion)){
+	        this.setSize(resultRegion.getSize())
+	    }
+	    if (!resultRegion.equalsPosition(sourceRegion)){
+	        this.setPosition(resultRegion.getPosition(), { absolute: !!config.absolute })
+	    }
+
+	    return result.position
+	}
+
+	module.exports = Region
 
 /***/ },
 /* 23 */
@@ -2865,7 +3043,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = __webpack_require__(3)?
+	module.exports = __webpack_require__(4)?
 		{
 			onMouseDown: 'onTouchStart',
 			onMouseUp  : 'onTouchEnd',
@@ -2884,7 +3062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var Region = __webpack_require__(22)
-	var assign = __webpack_require__(4)
+	var assign = __webpack_require__(2)
 	var align  = __webpack_require__(39)
 
 	module.exports = function getPositionStyle(props, state){
@@ -3010,8 +3188,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React         = __webpack_require__(1)
-	var assign        = __webpack_require__(4)
-	var getArrowStyle = __webpack_require__(45)
+	var assign        = __webpack_require__(2)
+	var getArrowStyle = __webpack_require__(48)
 
 	function emptyFn(){}
 
@@ -3215,7 +3393,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React        = __webpack_require__(1)
-	var assign       = __webpack_require__(4)
+	var assign       = __webpack_require__(2)
 	var MenuItemCell = __webpack_require__(8)
 
 	module.exports = function(props, column) {
@@ -3230,97 +3408,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = function(obj, prop){
-		return Object.prototype.hasOwnProperty.call(obj, prop)
-	}
+	var hasOwn      = __webpack_require__(43)
+	var getPrefixed = __webpack_require__(44)
 
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getStylePrefixed = __webpack_require__(36)
-	var properties       = __webpack_require__(37)
-
-	module.exports = function(key, value){
-
-		if (!properties[key]){
-			return key
-		}
-
-		return getStylePrefixed(key, value)
-	}
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	module.exports = function(fn, item){
-
-		if (!item){
-			return
-		}
-
-		if (Array.isArray(item)){
-			return item.map(fn).filter(function(x){
-				return !!x
-			})
-		} else {
-			return fn(item)
-		}
-	}
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getCssPrefixedValue = __webpack_require__(38)
-
-	module.exports = function(target){
-		target.plugins = target.plugins || [
-			(function(){
-				var values = {
-					'flex':1,
-					'inline-flex':1
-				}
-
-				return function(key, value){
-					if (key === 'display' && value in values){
-						return {
-							key  : key,
-							value: getCssPrefixedValue(key, value)
-						}
-					}
-				}
-			})()
-		]
-
-		target.plugin = function(fn){
-			target.plugins = target.plugins || []
-
-			target.plugins.push(fn)
-		}
-
-		return target
-	}
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var hasOwn      = __webpack_require__(41)
-	var getPrefixed = __webpack_require__(42)
-
-	var map      = __webpack_require__(43)
-	var plugable = __webpack_require__(44)
+	var map      = __webpack_require__(45)
+	var plugable = __webpack_require__(46)
 
 	function plugins(key, value){
 
@@ -3381,17 +3473,103 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = plugable(RESULT)
 
 /***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function(obj, prop){
+		return Object.prototype.hasOwnProperty.call(obj, prop)
+	}
+
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getStylePrefixed = __webpack_require__(40)
+	var properties       = __webpack_require__(41)
+
+	module.exports = function(key, value){
+
+		if (!properties[key]){
+			return key
+		}
+
+		return getStylePrefixed(key, value)
+	}
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function(fn, item){
+
+		if (!item){
+			return
+		}
+
+		if (Array.isArray(item)){
+			return item.map(fn).filter(function(x){
+				return !!x
+			})
+		} else {
+			return fn(item)
+		}
+	}
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getCssPrefixedValue = __webpack_require__(42)
+
+	module.exports = function(target){
+		target.plugins = target.plugins || [
+			(function(){
+				var values = {
+					'flex':1,
+					'inline-flex':1
+				}
+
+				return function(key, value){
+					if (key === 'display' && value in values){
+						return {
+							key  : key,
+							value: getCssPrefixedValue(key, value, true)
+						}
+					}
+				}
+			})()
+		]
+
+		target.plugin = function(fn){
+			target.plugins = target.plugins || []
+
+			target.plugins.push(fn)
+		}
+
+		return target
+	}
+
+/***/ },
 /* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var curry   = __webpack_require__(46)
+	var curry   = __webpack_require__(50)
 	var matches
 
 	module.exports = curry(function(selector, node){
 
-		matches = matches || __webpack_require__(47)
+		matches = matches || __webpack_require__(51)
 
 	    while (node = node.parentElement){
 	        if (matches.call(node, selector)){
@@ -3447,46 +3625,121 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	'use strict'
 
-	var toUpperFirst = __webpack_require__(48)
-	var getPrefix    = __webpack_require__(49)
-	var el           = __webpack_require__(50)
+	var Region = __webpack_require__(47)
 
-	var MEMORY = {}
-	var STYLE
-	var ELEMENT
+	/**
+	 * @static
+	 * Aligns the source region to the target region, so as to correspond to the given alignment.
+	 *
+	 * NOTE that this method makes changes on the sourceRegion in order for it to be aligned as specified.
+	 *
+	 * @param {Region} sourceRegion
+	 * @param {Region} targetRegion
+	 *
+	 * @param {String} align A string with 2 valid align positions, eg: 'tr-bl'.
+	 * For valid positions, see {@link Region#getPoint}
+	 *
+	 * Having 2 regions, we need to be able to align them as we wish:
+	 *
+	 * for example, if we have
+	 *
+	 *       source    target
+	 *       ________________
+	 *       ____
+	 *      |    |     ________
+	 *      |____|    |        |
+	 *                |        |
+	 *                |________|
+	 *
+	 * and we align 't-t', we get:
+	 *
+	 *       source    target
+	 *       _________________
+	 *
+	 *       ____      ________
+	 *      |    |    |        |
+	 *      |____|    |        |
+	 *                |________|
+	 *
+	 *  In this case, the source was moved down to be aligned to the top of the target
+	 *
+	 *
+	 * and if we align 'tc-tc' we get
+	 *
+	 *       source     target
+	 *       __________________
+	 *
+	 *                 ________
+	 *                | |    | |
+	 *                | |____| |
+	 *                |________|
+	 *
+	 *  Since the source was moved to have the top-center point to be the same with target top-center
+	 *
+	 *
+	 *
+	 * @return {RegionClass} The Region class
+	 */
+	Region.align = function(sourceRegion, targetRegion, align){
 
-	module.exports = function(key, value){
+	    targetRegion = Region.from(targetRegion)
 
-	    ELEMENT = ELEMENT || el()
-	    STYLE   = STYLE   || ELEMENT.style
+	    align = (align || 'c-c').split('-')
 
-	    var k = key// + ': ' + value
+	    //<debug>
+	    if (align.length != 2){
+	        console.warn('Incorrect region alignment! The align parameter need to be in the form \'br-c\', that is, a - separated string!', align)
+	    }
+	    //</debug>
 
-	    if (MEMORY[k]){
-	        return MEMORY[k]
+	    return Region.alignToPoint(sourceRegion, targetRegion.getPoint(align[1]), align[0])
+	}
+
+	/**
+	 * Modifies the given region to be aligned to the point, as specified by anchor
+	 *
+	 * @param {Region} region The region to align to the point
+	 * @param {Object} point The point to be used as a reference
+	 * @param {Number} point.x
+	 * @param {Number} point.y
+	 * @param {String} anchor The position where to anchor the region to the point. See {@link #getPoint} for available options/
+	 *
+	 * @return {Region} the given region
+	 */
+	Region.alignToPoint = function(region, point, anchor){
+
+	    region = Region.from(region)
+
+	    var sourcePoint = region.getPoint(anchor)
+	    var count       = 0
+	    var shiftObj    = {}
+
+	    if (
+	            sourcePoint.x != null &&
+	            point.x != null
+	        ){
+
+	            count++
+	            shiftObj.left = point.x - sourcePoint.x
 	    }
 
-	    var prefix
-	    var prefixed
-
-	    if (!(key in STYLE)){//we have to prefix
-
-	        prefix = getPrefix('appearance')
-
-	        if (prefix){
-	            prefixed = prefix + toUpperFirst(key)
-
-	            if (prefixed in STYLE){
-	                key = prefixed
-	            }
-	        }
+	    if (
+	            sourcePoint.y != null &&
+	            point.y != null
+	        ){
+	            count++
+	            shiftObj.top = point.y - sourcePoint.y
 	    }
 
-	    MEMORY[k] = key
+	    if (count){
 
-	    return key
+	        region.shift(shiftObj)
+
+	    }
+
+	    return region
 	}
 
 /***/ },
@@ -3495,93 +3748,122 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = {
-	  'alignItems': 1,
-	  'justifyContent': 1,
-	  'flex': 1,
-	  'flexFlow': 1,
+	var Region = __webpack_require__(47)
 
-	  'userSelect': 1,
-	  'transform': 1,
-	  'transition': 1,
-	  'transformOrigin': 1,
-	  'transformStyle': 1,
-	  'transitionProperty': 1,
-	  'transitionDuration': 1,
-	  'transitionTimingFunction': 1,
-	  'transitionDelay': 1,
-	  'borderImage': 1,
-	  'borderImageSlice': 1,
-	  'boxShadow': 1,
-	  'backgroundClip': 1,
-	  'backfaceVisibility': 1,
-	  'perspective': 1,
-	  'perspectiveOrigin': 1,
-	  'animation': 1,
-	  'animationDuration': 1,
-	  'animationName': 1,
-	  'animationDelay': 1,
-	  'animationDirection': 1,
-	  'animationIterationCount': 1,
-	  'animationTimingFunction': 1,
-	  'animationPlayState': 1,
-	  'animationFillMode': 1,
-	  'appearance': 1
+	/**
+	 *
+	 * Aligns this region to the given region
+	 * @param {Region} region
+	 * @param {String} alignPositions For available positions, see {@link #getPoint}
+	 *
+	 *     eg: 'tr-bl'
+	 *
+	 * @return this
+	 */
+	Region.prototype.alignToRegion = function(region, alignPositions){
+	    Region.align(this, region, alignPositions)
+
+	    return this
+	}
+
+	/**
+	 * Aligns this region to the given point, in the anchor position
+	 * @param {Object} point eg: {x: 20, y: 600}
+	 * @param {Number} point.x
+	 * @param {Number} point.y
+	 *
+	 * @param {String} anchor For available positions, see {@link #getPoint}
+	 *
+	 *     eg: 'bl'
+	 *
+	 * @return this
+	 */
+	 Region.prototype.alignToPoint = function(point, anchor){
+	    Region.alignToPoint(this, point, anchor)
+
+	    return this
 	}
 
 /***/ },
 /* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	'use strict'
 
-	var getPrefix     = __webpack_require__(49)
-	var forcePrefixed = __webpack_require__(51)
-	var el            = __webpack_require__(50)
+	var ALIGN_TO_NORMALIZED = __webpack_require__(49)
 
-	var MEMORY = {}
-	var STYLE
-	var ELEMENT
+	var Region = __webpack_require__(47)
 
-	module.exports = function(key, value){
+	/**
+	 * @localdoc Given source and target regions, and the given alignments required, returns a region that is the resulting allignment.
+	 * Does not modify the sourceRegion.
+	 *
+	 * Example
+	 *
+	 *      var sourceRegion = zippy.getInstance({
+	 *          alias  : 'z.region',
+	 *          top    : 10,
+	 *          left   : 10,
+	 *          bottom : 40,
+	 *          right  : 100
+	 *      })
+	 *
+	 *      var targetRegion = zippy.getInstance({
+	 *          alias  : 'z.region',
+	 *          top    : 10,
+	 *          left   : 10,
+	 *          bottom : 40,
+	 *          right  : 100
+	 *      })
+	 *      //has top-left at (10,10)
+	 *      //and bottom-right at (40, 100)
+	 *
+	 *      var alignRegion = alignable.COMPUTE_ALIGN_REGION(sourceRegion, targetRegion, 'tl-br')
+	 *
+	 *      //alignRegion will be a clone of sourceRegion, but will have the
+	 *      //top-left corner aligned with bottom-right of targetRegion
+	 *
+	 *      alignRegion.get() // => { top: 40, left: 100, bottom: 70, right: 190 }
+	 *
+	 * @param  {Region} sourceRegion The source region to align to targetRegion
+	 * @param  {Region} targetRegion The target region to which to align the sourceRegion
+	 * @param  {String/String[]} positions    A string ( delimited by "-" characters ) or an array of strings with the position to try, in the order of their priority.
+	 * See Region#getPoint for a list of available positions. They can be combined in any way.
+	 * @param  {Object} config      A config object with other configuration for the alignment
+	 * @param  {Object/Object[]} config.offset      Optional offsets. Either an object or an array with a different offset for each position
+	 * @param  {Element/Region/Boolean} config.constrain  The constrain to region or element. If the boolean true, Region.getDocRegion() will be used
+	 * @param  {Object/Boolean} config.sync   A boolean object that indicates whether to sync sourceRegion and targetRegion sizes (width/height or both). Can be
+	 *
+	 *  * true - in order to sync both width and height
+	 *  * { width: true }  - to only sync width
+	 *  * { height: true } - to only sync height
+	 *  * { size: true }   - to sync both width and height
+	 *
+	 * @return {Object} an object with the following keys:
+	 *
+	 *  * position - the position where the alignment was made. One of the given positions
+	 *  * region   - the region where the alignment is in place
+	 *  * positionChanged - boolean value indicating if the position of the returned region is different from the position of sourceRegion
+	 *  * widthChanged    - boolean value indicating if the width of the returned region is different from the width of sourceRegion
+	 *  * heightChanged   - boolean value indicating if the height of the returned region is different from the height of sourceRegion
+	 */
+	function COMPUTE_ALIGN_REGION(sourceRegion, targetRegion, positions, config){
+	    sourceRegion = Region.from(sourceRegion)
 
-	    ELEMENT = ELEMENT || el()
-	    STYLE   = STYLE   ||  ELEMENT.style
+	    var sourceClone = sourceRegion.clone()
+	    var position    = ALIGN_TO_NORMALIZED(sourceClone, targetRegion, positions, config)
 
-	    var k = key + ': ' + value
-
-	    if (MEMORY[k]){
-	        return MEMORY[k]
+	    return {
+	        position        : position,
+	        region          : sourceClone,
+	        widthChanged    : sourceClone.getWidth() != sourceRegion.getWidth(),
+	        heightChanged   : sourceClone.getHeight() != sourceRegion.getHeight(),
+	        positionChanged : sourceClone.equalsPosition(sourceRegion)
 	    }
-
-	    var prefix
-	    var prefixed
-	    var prefixedValue
-
-	    if (!(key in STYLE)){
-
-	        prefix = getPrefix('appearance')
-
-	        if (prefix){
-	            prefixed = forcePrefixed(key, value)
-
-	            prefixedValue = '-' + prefix.toLowerCase() + '-' + value
-
-	            if (prefixed in STYLE){
-	                ELEMENT.style[prefixed] = ''
-	                ELEMENT.style[prefixed] = prefixedValue
-
-	                if (ELEMENT.style[prefixed] !== ''){
-	                    value = prefixedValue
-	                }
-	            }
-	        }
-	    }
-
-	    MEMORY[k] = value
-
-	    return value
 	}
+
+
+	module.exports = COMPUTE_ALIGN_REGION
 
 /***/ },
 /* 39 */
@@ -3589,7 +3871,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var Region = __webpack_require__(58)
+	var Region = __webpack_require__(22)
 	var getConstrainRegion = __webpack_require__(21)
 
 	module.exports = function(props, subMenuRegion, targetAlignRegion, constrainTo){
@@ -3627,14 +3909,798 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var hasOwn    = __webpack_require__(59)
-	var newify    = __webpack_require__(60)
+	var toUpperFirst = __webpack_require__(52)
+	var getPrefix    = __webpack_require__(53)
+	var el           = __webpack_require__(54)
 
-	var assign      = __webpack_require__(4);
-	var EventEmitter = __webpack_require__(61).EventEmitter
+	var MEMORY = {}
+	var STYLE
+	var ELEMENT
 
-	var inherits = __webpack_require__(55)
-	var VALIDATE = __webpack_require__(56)
+	var PREFIX
+
+	module.exports = function(key, value){
+
+	    ELEMENT = ELEMENT || el()
+	    STYLE   = STYLE   || ELEMENT.style
+
+	    var k = key// + ': ' + value
+
+	    if (MEMORY[k]){
+	        return MEMORY[k]
+	    }
+
+	    var prefix
+	    var prefixed
+
+	    if (!(key in STYLE)){//we have to prefix
+
+	        // if (PREFIX){
+	        //     prefix = PREFIX
+	        // } else {
+	            prefix = getPrefix('appearance')
+
+	        //     if (prefix){
+	        //         prefix = PREFIX = prefix.toLowerCase()
+	        //     }
+	        // }
+
+	        if (prefix){
+	            prefixed = prefix + toUpperFirst(key)
+
+	            if (prefixed in STYLE){
+	                key = prefixed
+	            }
+	        }
+	    }
+
+	    MEMORY[k] = key
+
+	    return key
+	}
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = {
+	  'alignItems': 1,
+	  'justifyContent': 1,
+	  'flex': 1,
+	  'flexFlow': 1,
+	  'flexGrow': 1,
+
+	  'userSelect': 1,
+	  'transform': 1,
+	  'transition': 1,
+	  'transformOrigin': 1,
+	  'transformStyle': 1,
+	  'transitionProperty': 1,
+	  'transitionDuration': 1,
+	  'transitionTimingFunction': 1,
+	  'transitionDelay': 1,
+	  'borderImage': 1,
+	  'borderImageSlice': 1,
+	  'boxShadow': 1,
+	  'backgroundClip': 1,
+	  'backfaceVisibility': 1,
+	  'perspective': 1,
+	  'perspectiveOrigin': 1,
+	  'animation': 1,
+	  'animationDuration': 1,
+	  'animationName': 1,
+	  'animationDelay': 1,
+	  'animationDirection': 1,
+	  'animationIterationCount': 1,
+	  'animationTimingFunction': 1,
+	  'animationPlayState': 1,
+	  'animationFillMode': 1,
+	  'appearance': 1
+	}
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getPrefix     = __webpack_require__(53)
+	var forcePrefixed = __webpack_require__(55)
+	var el            = __webpack_require__(54)
+
+	var MEMORY = {}
+	var STYLE
+	var ELEMENT
+
+	module.exports = function(key, value, force){
+
+	    ELEMENT = ELEMENT || el()
+	    STYLE   = STYLE   ||  ELEMENT.style
+
+	    var k = key + ': ' + value
+
+	    if (MEMORY[k]){
+	        return MEMORY[k]
+	    }
+
+	    var prefix
+	    var prefixed
+	    var prefixedValue
+
+	    if (force || !(key in STYLE)){
+
+	        prefix = getPrefix('appearance')
+
+	        if (prefix){
+	            prefixed = forcePrefixed(key, value)
+
+	            prefixedValue = '-' + prefix.toLowerCase() + '-' + value
+
+	            if (prefixed in STYLE){
+	                ELEMENT.style[prefixed] = ''
+	                ELEMENT.style[prefixed] = prefixedValue
+
+	                if (ELEMENT.style[prefixed] !== ''){
+	                    value = prefixedValue
+	                }
+	            }
+	        }
+	    }
+
+	    MEMORY[k] = value
+
+	    return value
+	}
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function(obj, prop){
+		return Object.prototype.hasOwnProperty.call(obj, prop)
+	}
+
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getStylePrefixed = __webpack_require__(57)
+	var properties       = __webpack_require__(58)
+
+	module.exports = function(key, value){
+
+		if (!properties[key]){
+			return key
+		}
+
+		return getStylePrefixed(key, value)
+	}
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function(fn, item){
+
+		if (!item){
+			return
+		}
+
+		if (Array.isArray(item)){
+			return item.map(fn).filter(function(x){
+				return !!x
+			})
+		} else {
+			return fn(item)
+		}
+	}
+
+/***/ },
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getCssPrefixedValue = __webpack_require__(56)
+
+	module.exports = function(target){
+		target.plugins = target.plugins || [
+			(function(){
+				var values = {
+					'flex':1,
+					'inline-flex':1
+				}
+
+				return function(key, value){
+					if (key === 'display' && value in values){
+						return {
+							key  : key,
+							value: getCssPrefixedValue(key, value, true)
+						}
+					}
+				}
+			})()
+		]
+
+		target.plugin = function(fn){
+			target.plugins = target.plugins || []
+
+			target.plugins.push(fn)
+		}
+
+		return target
+	}
+
+/***/ },
+/* 47 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(59)
+
+/***/ },
+/* 48 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function arrowStyle(side, config){
+
+	    var arrowSize   = config.size   || 8
+	    var arrowWidth  = config.width  || arrowSize
+	    var arrowHeight = config.height || arrowSize
+	    var arrowColor  = config.color  || 'black'
+	    var includePosition = config.includePosition
+
+	    var style
+
+	    if (side == 'up' || side == 'down'){
+
+	        style = {
+	            borderLeft : arrowWidth + 'px solid transparent',
+	            borderRight: arrowWidth + 'px solid transparent'
+	        }
+
+	        if (includePosition){
+	            style.marginTop = -Math.round(arrowHeight/2) + 'px'
+	            style.position  = 'relative'
+	            style.top       = '50%'
+	        }
+
+	        style[side === 'up'? 'borderBottom': 'borderTop'] = arrowHeight + 'px solid ' + arrowColor
+	    }
+
+	    if (side == 'left' || side == 'right'){
+
+	        style = {
+	            borderTop : arrowHeight + 'px solid transparent',
+	            borderBottom: arrowHeight + 'px solid transparent'
+	        }
+
+	        if (includePosition){
+	            style.marginLeft = -Math.round(arrowWidth/2) + 'px'
+	            style.position   = 'relative'
+	            style.left       = '50%'
+	        }
+
+	        style[side === 'left'? 'borderRight': 'borderLeft'] = arrowWidth + 'px solid ' + arrowColor
+	    }
+
+	    return style
+	}
+
+/***/ },
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict'
+
+	var Region = __webpack_require__(47)
+
+	/**
+	 *
+	 * This method is trying to align the sourceRegion to the targetRegion, given the alignment positions
+	 * and the offsets. It only modifies the sourceRegion
+	 *
+	 * This is all well and easy, but if there is a constrainTo region, the algorithm has to take it into account.
+	 * In this case, it works as follows.
+	 *
+	 *  * start with the first alignment position. Aligns the region, adds the offset and then check for the constraint.
+	 *  * if the constraint condition is ok, return the position.
+	 *  * otherwise, remember the intersection area, if the regions are intersecting.
+	 *  * then go to the next specified align position, and so on, computing the maximum intersection area.
+	 *
+	 * If no alignment fits the constrainRegion, the sourceRegion will be resized to match it,
+	 * using the position with the maximum intersection area.
+	 *
+	 * Since we have computed the index of the position with the max intersection area, take that position,
+	 * and align the sourceRegion accordingly. Then resize the sourceRegion to the intersection, and reposition
+	 * it again, since resizing it might have destroyed the alignment.
+	 *
+	 * Return the position.
+	 *
+	 * @param {Region} sourceRegion
+	 * @param {Region} targetRegion
+	 * @param {String[]} positions
+	 * @param {Object} config
+	 * @param {Array} config.offset
+	 * @param {Region} config.constrain
+	 * @param {Boolean/Object} config.sync
+	 *
+	 * @return {String/Undefined} the chosen position for the alignment, or undefined if no position found
+	 */
+	function ALIGN_TO_NORMALIZED(sourceRegion, targetRegion, positions, config){
+
+	    targetRegion = Region.from(targetRegion)
+
+	    config = config  || {}
+
+	    var constrainTo = config.constrain,
+	        syncOption  = config.sync,
+	        offsets     = config.offset || [],
+	        syncWidth   = false,
+	        syncHeight  = false,
+	        sourceClone = sourceRegion.clone()
+
+	    /*
+	     * Prepare the method arguments: positions, offsets, constrain and sync options
+	     */
+	    if (!Array.isArray(positions)){
+	        positions = positions? [positions]: []
+	    }
+
+	    if (!Array.isArray(offsets)){
+	        offsets = offsets? [offsets]: []
+	    }
+
+	    if (constrainTo){
+	        constrainTo = constrainTo === true?
+	                                Region.getDocRegion():
+	                                constrainTo.getRegion()
+	    }
+
+	    if (syncOption){
+
+	        if (syncOption.size){
+	            syncWidth  = true
+	            syncHeight = true
+	        } else {
+	            syncWidth  = syncOption === true?
+	                            true:
+	                            syncOption.width || false
+
+	            syncHeight = syncOption === true?
+	                            true:
+	                            syncOption.height || false
+	        }
+	    }
+
+	    if (syncWidth){
+	        sourceClone.setWidth(targetRegion.getWidth())
+	    }
+	    if (syncHeight){
+	        sourceClone.setHeight(targetRegion.getHeight())
+
+	    }
+
+	    var offset,
+	        i = 0,
+	        len = positions.length,
+	        pos,
+	        intersection,
+	        itArea,
+	        maxArea = -1,
+	        maxAreaIndex = -1
+
+	    for (; i < len; i++){
+	        pos     = positions[i]
+	        offset  = offsets[i]
+
+	        sourceClone.alignToRegion(targetRegion, pos)
+
+	        if (offset){
+	            if (!Array.isArray(offset)){
+	                offset = offsets[i] = [offset.x || offset.left, offset.y || offset.top]
+	            }
+
+	            sourceClone.shift({
+	                left: offset[0],
+	                top : offset[1]
+	            })
+	        }
+
+	        //the source region is already aligned in the correct position
+
+	        if (constrainTo){
+	            //if we have a constrain region, test for the constrain
+	            intersection = sourceClone.getIntersection(constrainTo)
+
+	            if ( intersection && intersection.equals(sourceClone) ) {
+	                //constrain respected, so return (the aligned position)
+
+	                sourceRegion.set(sourceClone)
+	                return pos
+	            } else {
+
+	                //the constrain was not respected, so continue trying
+	                if (intersection && ((itArea = intersection.getArea()) > maxArea)){
+	                    maxArea      = itArea
+	                    maxAreaIndex = i
+	                }
+	            }
+
+	        } else {
+	            sourceRegion.set(sourceClone)
+	            return pos
+	        }
+	    }
+
+	    //no alignment respected the constraints
+	    if (~maxAreaIndex){
+	        pos     = positions[maxAreaIndex]
+	        offset  = offsets[maxAreaIndex]
+
+	        sourceClone.alignToRegion(targetRegion, pos)
+
+	        if (offset){
+	            sourceClone.shift({
+	                left: offset[0],
+	                top : offset[1]
+	            })
+	        }
+
+	        //we are sure an intersection exists, because of the way the maxAreaIndex was computed
+	        intersection = sourceClone.getIntersection(constrainTo)
+
+	        sourceClone.setRegion(intersection)
+	        sourceClone.alignToRegion(targetRegion, pos)
+
+	        if (offset){
+	            sourceClone.shift({
+	                left: offset[0],
+	                top : offset[1]
+	            })
+	        }
+
+	        sourceRegion.set(sourceClone)
+
+	        return pos
+	    }
+
+	}
+
+	module.exports = ALIGN_TO_NORMALIZED
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	function curry(fn, n){
+
+	    if (typeof n !== 'number'){
+	        n = fn.length
+	    }
+
+	    function getCurryClosure(prevArgs){
+
+	        function curryClosure() {
+
+	            var len  = arguments.length
+	            var args = [].concat(prevArgs)
+
+	            if (len){
+	                args.push.apply(args, arguments)
+	            }
+
+	            if (args.length < n){
+	                return getCurryClosure(args)
+	            }
+
+	            return fn.apply(this, args)
+	        }
+
+	        return curryClosure
+	    }
+
+	    return getCurryClosure([])
+	}
+
+	module.exports = curry
+
+/***/ },
+/* 51 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var proto = Element.prototype
+
+	var nativeMatches = proto.matches ||
+	  proto.mozMatchesSelector ||
+	  proto.msMatchesSelector ||
+	  proto.oMatchesSelector ||
+	  proto.webkitMatchesSelector
+
+	module.exports = nativeMatches
+
+
+/***/ },
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function(str){
+		return str?
+				str.charAt(0).toUpperCase() + str.slice(1):
+				''
+	}
+
+/***/ },
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var toUpperFirst = __webpack_require__(52)
+	var prefixes     = ["ms", "Moz", "Webkit", "O"]
+
+	var el = __webpack_require__(54)
+
+	var ELEMENT
+	var PREFIX
+
+	module.exports = function(key){
+
+		if (PREFIX !== undefined){
+			return PREFIX
+		}
+
+		ELEMENT = ELEMENT || el()
+
+		var i = 0
+		var len = prefixes.length
+		var tmp
+		var prefix
+
+		for (; i < len; i++){
+			prefix = prefixes[i]
+			tmp = prefix + toUpperFirst(key)
+
+			if (typeof ELEMENT.style[tmp] != 'undefined'){
+				return PREFIX = prefix
+			}
+		}
+
+		return PREFIX
+	}
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+
+	var el
+
+	module.exports = function(){
+
+		if(!el && !!global.document){
+		  	el = global.document.createElement('div')
+		}
+
+		if (!el){
+			el = {style: {}}
+		}
+
+		return el
+	}
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 55 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var toUpperFirst = __webpack_require__(52)
+	var getPrefix    = __webpack_require__(53)
+	var properties   = __webpack_require__(41)
+
+	/**
+	 * Returns the given key prefixed, if the property is found in the prefixProps map.
+	 *
+	 * Does not test if the property supports the given value unprefixed.
+	 * If you need this, use './getPrefixed' instead
+	 */
+	module.exports = function(key, value){
+
+		if (!properties[key]){
+			return key
+		}
+
+		var prefix = getPrefix(key)
+
+		return prefix?
+					prefix + toUpperFirst(key):
+					key
+	}
+
+/***/ },
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getPrefix     = __webpack_require__(60)
+	var forcePrefixed = __webpack_require__(61)
+	var el            = __webpack_require__(62)
+
+	var MEMORY = {}
+	var STYLE
+	var ELEMENT
+
+	module.exports = function(key, value, force){
+
+	    ELEMENT = ELEMENT || el()
+	    STYLE   = STYLE   ||  ELEMENT.style
+
+	    var k = key + ': ' + value
+
+	    if (MEMORY[k]){
+	        return MEMORY[k]
+	    }
+
+	    var prefix
+	    var prefixed
+	    var prefixedValue
+
+	    if (force || !(key in STYLE)){
+
+	        prefix = getPrefix('appearance')
+
+	        if (prefix){
+	            prefixed = forcePrefixed(key, value)
+
+	            prefixedValue = '-' + prefix.toLowerCase() + '-' + value
+
+	            if (prefixed in STYLE){
+	                ELEMENT.style[prefixed] = ''
+	                ELEMENT.style[prefixed] = prefixedValue
+
+	                if (ELEMENT.style[prefixed] !== ''){
+	                    value = prefixedValue
+	                }
+	            }
+	        }
+	    }
+
+	    MEMORY[k] = value
+
+	    return value
+	}
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var toUpperFirst = __webpack_require__(63)
+	var getPrefix    = __webpack_require__(60)
+	var el           = __webpack_require__(62)
+
+	var MEMORY = {}
+	var STYLE
+	var ELEMENT
+
+	var PREFIX
+
+	module.exports = function(key, value){
+
+	    ELEMENT = ELEMENT || el()
+	    STYLE   = STYLE   || ELEMENT.style
+
+	    var k = key// + ': ' + value
+
+	    if (MEMORY[k]){
+	        return MEMORY[k]
+	    }
+
+	    var prefix
+	    var prefixed
+
+	    if (!(key in STYLE)){//we have to prefix
+
+	        // if (PREFIX){
+	        //     prefix = PREFIX
+	        // } else {
+	            prefix = getPrefix('appearance')
+
+	        //     if (prefix){
+	        //         prefix = PREFIX = prefix.toLowerCase()
+	        //     }
+	        // }
+
+	        if (prefix){
+	            prefixed = prefix + toUpperFirst(key)
+
+	            if (prefixed in STYLE){
+	                key = prefixed
+	            }
+	        }
+	    }
+
+	    MEMORY[k] = key
+
+	    return key
+	}
+
+/***/ },
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = {
+	  'alignItems': 1,
+	  'justifyContent': 1,
+	  'flex': 1,
+	  'flexFlow': 1,
+	  'flexGrow': 1,
+
+	  'userSelect': 1,
+	  'transform': 1,
+	  'transition': 1,
+	  'transformOrigin': 1,
+	  'transformStyle': 1,
+	  'transitionProperty': 1,
+	  'transitionDuration': 1,
+	  'transitionTimingFunction': 1,
+	  'transitionDelay': 1,
+	  'borderImage': 1,
+	  'borderImageSlice': 1,
+	  'boxShadow': 1,
+	  'backgroundClip': 1,
+	  'backfaceVisibility': 1,
+	  'perspective': 1,
+	  'perspectiveOrigin': 1,
+	  'animation': 1,
+	  'animationDuration': 1,
+	  'animationName': 1,
+	  'animationDelay': 1,
+	  'animationDirection': 1,
+	  'animationIterationCount': 1,
+	  'animationTimingFunction': 1,
+	  'animationPlayState': 1,
+	  'animationFillMode': 1,
+	  'appearance': 1
+	}
+
+/***/ },
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var hasOwn    = __webpack_require__(67)
+	var newify    = __webpack_require__(68)
+
+	var assign      = __webpack_require__(2);
+	var EventEmitter = __webpack_require__(69).EventEmitter
+
+	var inherits = __webpack_require__(64)
+	var VALIDATE = __webpack_require__(65)
 
 	var objectToString = Object.prototype.toString
 
@@ -4673,224 +5739,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	})
 
-	__webpack_require__(57)(REGION)
+	__webpack_require__(66)(REGION)
 
 	module.exports = REGION
 
 /***/ },
-/* 41 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = function(obj, prop){
-		return Object.prototype.hasOwnProperty.call(obj, prop)
-	}
-
-
-/***/ },
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getStylePrefixed = __webpack_require__(52)
-	var properties       = __webpack_require__(53)
-
-	module.exports = function(key, value){
-
-		if (!properties[key]){
-			return key
-		}
-
-		return getStylePrefixed(key, value)
-	}
-
-/***/ },
-/* 43 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	module.exports = function(fn, item){
-
-		if (!item){
-			return
-		}
-
-		if (Array.isArray(item)){
-			return item.map(fn).filter(function(x){
-				return !!x
-			})
-		} else {
-			return fn(item)
-		}
-	}
-
-/***/ },
-/* 44 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getCssPrefixedValue = __webpack_require__(54)
-
-	module.exports = function(target){
-		target.plugins = target.plugins || [
-			(function(){
-				var values = {
-					'flex':1,
-					'inline-flex':1
-				}
-
-				return function(key, value){
-					if (key === 'display' && value in values){
-						return {
-							key  : key,
-							value: getCssPrefixedValue(key, value)
-						}
-					}
-				}
-			})()
-		]
-
-		target.plugin = function(fn){
-			target.plugins = target.plugins || []
-
-			target.plugins.push(fn)
-		}
-
-		return target
-	}
-
-/***/ },
-/* 45 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	module.exports = function arrowStyle(side, config){
-
-	    var arrowSize   = config.size   || 8
-	    var arrowWidth  = config.width  || arrowSize
-	    var arrowHeight = config.height || arrowSize
-	    var arrowColor  = config.color  || 'black'
-	    var includePosition = config.includePosition
-
-	    var style
-
-	    if (side == 'up' || side == 'down'){
-
-	        style = {
-	            borderLeft : arrowWidth + 'px solid transparent',
-	            borderRight: arrowWidth + 'px solid transparent'
-	        }
-
-	        if (includePosition){
-	            style.marginTop = -Math.round(arrowHeight/2) + 'px'
-	            style.position  = 'relative'
-	            style.top       = '50%'
-	        }
-
-	        style[side === 'up'? 'borderBottom': 'borderTop'] = arrowHeight + 'px solid ' + arrowColor
-	    }
-
-	    if (side == 'left' || side == 'right'){
-
-	        style = {
-	            borderTop : arrowHeight + 'px solid transparent',
-	            borderBottom: arrowHeight + 'px solid transparent'
-	        }
-
-	        if (includePosition){
-	            style.marginLeft = -Math.round(arrowWidth/2) + 'px'
-	            style.position   = 'relative'
-	            style.left       = '50%'
-	        }
-
-	        style[side === 'left'? 'borderRight': 'borderLeft'] = arrowWidth + 'px solid ' + arrowColor
-	    }
-
-	    return style
-	}
-
-/***/ },
-/* 46 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	function curry(fn, n){
-
-	    if (typeof n !== 'number'){
-	        n = fn.length
-	    }
-
-	    function getCurryClosure(prevArgs){
-
-	        function curryClosure() {
-
-	            var len  = arguments.length
-	            var args = [].concat(prevArgs)
-
-	            if (len){
-	                args.push.apply(args, arguments)
-	            }
-
-	            if (args.length < n){
-	                return getCurryClosure(args)
-	            }
-
-	            return fn.apply(this, args)
-	        }
-
-	        return curryClosure
-	    }
-
-	    return getCurryClosure([])
-	}
-
-	module.exports = curry
-
-/***/ },
-/* 47 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var proto = Element.prototype
-
-	var nativeMatches = proto.matches ||
-	  proto.mozMatchesSelector ||
-	  proto.msMatchesSelector ||
-	  proto.oMatchesSelector ||
-	  proto.webkitMatchesSelector
-
-	module.exports = nativeMatches
-
-
-/***/ },
-/* 48 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	module.exports = function(str){
-		return str?
-				str.charAt(0).toUpperCase() + str.slice(1):
-				''
-	}
-
-/***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var toUpperFirst = __webpack_require__(48)
+	var toUpperFirst = __webpack_require__(63)
 	var prefixes     = ["ms", "Moz", "Webkit", "O"]
 
-	var el = __webpack_require__(50)
+	var el = __webpack_require__(62)
 
 	var ELEMENT
 	var PREFIX
@@ -4921,36 +5783,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 50 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
-
-	var el
-
-	module.exports = function(){
-
-		if(!el && !!global.document){
-		  	el = global.document.createElement('div')
-		}
-
-		if (!el){
-			el = {style: {}}
-		}
-
-		return el
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 51 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var toUpperFirst = __webpack_require__(48)
-	var getPrefix    = __webpack_require__(49)
-	var properties   = __webpack_require__(37)
+	var toUpperFirst = __webpack_require__(63)
+	var getPrefix    = __webpack_require__(60)
+	var properties   = __webpack_require__(58)
 
 	/**
 	 * Returns the given key prefixed, if the property is found in the prefixProps map.
@@ -4972,147 +5812,41 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 52 */
+/* 62 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+
+	var el
+
+	module.exports = function(){
+
+		if(!el && !!global.document){
+		  	el = global.document.createElement('div')
+		}
+
+		if (!el){
+			el = {style: {}}
+		}
+
+		return el
+	}
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var toUpperFirst = __webpack_require__(62)
-	var getPrefix    = __webpack_require__(63)
-	var el           = __webpack_require__(64)
-
-	var MEMORY = {}
-	var STYLE
-	var ELEMENT
-
-	module.exports = function(key, value){
-
-	    ELEMENT = ELEMENT || el()
-	    STYLE   = STYLE   || ELEMENT.style
-
-	    var k = key// + ': ' + value
-
-	    if (MEMORY[k]){
-	        return MEMORY[k]
-	    }
-
-	    var prefix
-	    var prefixed
-
-	    if (!(key in STYLE)){//we have to prefix
-
-	        prefix = getPrefix('appearance')
-
-	        if (prefix){
-	            prefixed = prefix + toUpperFirst(key)
-
-	            if (prefixed in STYLE){
-	                key = prefixed
-	            }
-	        }
-	    }
-
-	    MEMORY[k] = key
-
-	    return key
+	module.exports = function(str){
+		return str?
+				str.charAt(0).toUpperCase() + str.slice(1):
+				''
 	}
 
 /***/ },
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	module.exports = {
-	  'alignItems': 1,
-	  'justifyContent': 1,
-	  'flex': 1,
-	  'flexFlow': 1,
-
-	  'userSelect': 1,
-	  'transform': 1,
-	  'transition': 1,
-	  'transformOrigin': 1,
-	  'transformStyle': 1,
-	  'transitionProperty': 1,
-	  'transitionDuration': 1,
-	  'transitionTimingFunction': 1,
-	  'transitionDelay': 1,
-	  'borderImage': 1,
-	  'borderImageSlice': 1,
-	  'boxShadow': 1,
-	  'backgroundClip': 1,
-	  'backfaceVisibility': 1,
-	  'perspective': 1,
-	  'perspectiveOrigin': 1,
-	  'animation': 1,
-	  'animationDuration': 1,
-	  'animationName': 1,
-	  'animationDelay': 1,
-	  'animationDirection': 1,
-	  'animationIterationCount': 1,
-	  'animationTimingFunction': 1,
-	  'animationPlayState': 1,
-	  'animationFillMode': 1,
-	  'appearance': 1
-	}
-
-/***/ },
-/* 54 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getPrefix     = __webpack_require__(63)
-	var forcePrefixed = __webpack_require__(65)
-	var el            = __webpack_require__(64)
-
-	var MEMORY = {}
-	var STYLE
-	var ELEMENT
-
-	module.exports = function(key, value){
-
-	    ELEMENT = ELEMENT || el()
-	    STYLE   = STYLE   ||  ELEMENT.style
-
-	    var k = key + ': ' + value
-
-	    if (MEMORY[k]){
-	        return MEMORY[k]
-	    }
-
-	    var prefix
-	    var prefixed
-	    var prefixedValue
-
-	    if (!(key in STYLE)){
-
-	        prefix = getPrefix('appearance')
-
-	        if (prefix){
-	            prefixed = forcePrefixed(key, value)
-
-	            prefixedValue = '-' + prefix.toLowerCase() + '-' + value
-
-	            if (prefixed in STYLE){
-	                ELEMENT.style[prefixed] = ''
-	                ELEMENT.style[prefixed] = prefixedValue
-
-	                if (ELEMENT.style[prefixed] !== ''){
-	                    value = prefixedValue
-	                }
-	            }
-	        }
-	    }
-
-	    MEMORY[k] = value
-
-	    return value
-	}
-
-/***/ },
-/* 55 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5130,7 +5864,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 56 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5162,13 +5896,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 57 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var hasOwn   = __webpack_require__(59)
-	var VALIDATE = __webpack_require__(56)
+	var hasOwn   = __webpack_require__(67)
+	var VALIDATE = __webpack_require__(65)
 
 	module.exports = function(REGION){
 
@@ -5381,193 +6115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 58 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Region = __webpack_require__(22)
-
-	__webpack_require__(66)
-	__webpack_require__(67)
-
-	var COMPUTE_ALIGN_REGION = __webpack_require__(68)
-
-	/**
-	 * region-align module exposes methods for aligning {@link Element} and {@link Region} instances
-	 *
-	 * The #alignTo method aligns this to the target element/region using the specified positions. See #alignTo for a graphical example.
-	 *
-	 *
-	 *      var div = Element.select('div.first')
-	 *
-	 *      div.alignTo(Element.select('body') , 'br-br')
-	 *
-	 *      //aligns the div to be in the bottom-right corner of the body
-	 *
-	 * Other useful methods
-	 *
-	 *  * {@link #alignRegions} - aligns a given source region to a target region
-	 *  * {@link #COMPUTE_ALIGN_REGION} - given a source region and a target region, and alignment positions, returns a clone of the source region, but aligned to satisfy the given alignments
-	 */
-
-
-	/**
-	 * Aligns sourceRegion to targetRegion. It modifies the sourceRegion in order to perform the correct alignment.
-	 * See #COMPUTE_ALIGN_REGION for details and examples.
-	 *
-	 * This method calls #COMPUTE_ALIGN_REGION passing to it all its arguments. The #COMPUTE_ALIGN_REGION method returns a region that is properly aligned.
-	 * If this returned region position/size differs from sourceRegion, then the sourceRegion is modified to be an exact copy of the aligned region.
-	 *
-	 * @inheritdoc #COMPUTE_ALIGN_REGION
-	 * @return {String} the position used for alignment
-	 */
-	Region.alignRegions = function(sourceRegion, targetRegion, positions, config){
-
-	    var result        = COMPUTE_ALIGN_REGION(sourceRegion, targetRegion, positions, config)
-	    var alignedRegion = result.region
-
-	    if ( !alignedRegion.equals(sourceRegion) ) {
-	        sourceRegion.setRegion(alignedRegion)
-	    }
-
-	    return result.position
-
-	}
-
-	    /**
-	     *
-	     * The #alignTo method aligns this to the given target region, using the specified alignment position(s).
-	     * You can also specify a constrain for the alignment.
-	     *
-	     * Example
-	     *
-	     *      BIG
-	     *      ________________________
-	     *      |  _______              |
-	     *      | |       |             |
-	     *      | |   A   |             |
-	     *      | |       |      _____  |
-	     *      | |_______|     |     | |
-	     *      |               |  B  | |
-	     *      |               |     | |
-	     *      |_______________|_____|_|
-	     *
-	     * Assume the *BIG* outside rectangle is our constrain region, and you want to align the *A* rectangle
-	     * to the *B* rectangle. Ideally, you'll want their tops to be aligned, and *A* to be placed at the right side of *B*
-	     *
-	     *
-	     *      //so we would align them using
-	     *
-	     *      A.alignTo(B, 'tl-tr', { constrain: BIG })
-	     *
-	     * But this would result in
-	     *
-	     *       BIG
-	     *      ________________________
-	     *      |                       |
-	     *      |                       |
-	     *      |                       |
-	     *      |                _____ _|_____
-	     *      |               |     | .     |
-	     *      |               |  B  | . A   |
-	     *      |               |     | .     |
-	     *      |_______________|_____|_._____|
-	     *
-	     *
-	     * Which is not what we want. So we specify an array of options to try
-	     *
-	     *      A.alignTo(B, ['tl-tr', 'tr-tl'], { constrain: BIG })
-	     *
-	     * So by this we mean: try to align A(top,left) with B(top,right) and stick to the BIG constrain. If this is not possible,
-	     * try the next option: align A(top,right) with B(top,left)
-	     *
-	     * So this is what we end up with
-	     *
-	     *      BIG
-	     *      ________________________
-	     *      |                       |
-	     *      |                       |
-	     *      |                       |
-	     *      |        _______ _____  |
-	     *      |       |       |     | |
-	     *      |       |   A   |  B  | |
-	     *      |       |       |     | |
-	     *      |_______|_______|_____|_|
-	     *
-	     *
-	     * Which is a lot better!
-	     *
-	     * @param {Element/Region} target The target to which to align this alignable.
-	     *
-	     * @param {String[]/String} positions The positions for the alignment.
-	     *
-	     * Example:
-	     *
-	     *      'br-tl'
-	     *      ['br-tl','br-tr','cx-tc']
-	     *
-	     * This method will try to align using the first position. But if there is a constrain region, that position might not satisfy the constrain.
-	     * If this is the case, the next positions will be tried. If one of them satifies the constrain, it will be used for aligning and it will be returned from this method.
-	     *
-	     * If no position matches the contrain, the one with the largest intersection of the source region with the constrain will be used, and this alignable will be resized to fit the constrain region.
-	     *
-	     * @param {Object} config A config object with other configuration for this method
-	     *
-	     * @param {Array[]/Object[]/Object} config.offset The offset to use for aligning. If more that one offset is specified, then offset at a given index is used with the position at the same index.
-	     *
-	     * An offset can have the following form:
-	     *
-	     *      [left_offset, top_offset]
-	     *      {left: left_offset, top: top_offset}
-	     *      {x: left_offset, y: top_offset}
-	     *
-	     * You can pass one offset or an array of offsets. In case you pass just one offset,
-	     * it cannot have the array form, so you cannot call
-	     *
-	     *      this.alignTo(target, positions, [10, 20])
-	     *
-	     * If you do, it will not be considered. Instead, please use
-	     *
-	     *      this.alignTo(target, positions, {x: 10, y: 20})
-	     *
-	     * Or
-	     *
-	     *      this.alignTo(target, positions, [[10, 20]] )
-	     *
-	     * @param {Boolean/Element/Region} config.constrain If boolean, target will be constrained to the document region, otherwise,
-	     * getRegion will be called on this argument to determine the region we need to constrain to.
-	     *
-	     * @param {Boolean/Object} config.sync Either boolean or an object with {width, height}. If it is boolean,
-	     * both width and height will be synced. If directions are specified, will only sync the direction which is specified as true
-	     *
-	     * @return {String}
-	     *
-	     */
-	Region.prototype.alignTo = function(target, positions, config){
-
-	    config = config || {}
-
-	    var sourceRegion = this
-	    var targetRegion = Region.from(target)
-
-	    var result = COMPUTE_ALIGN_REGION(sourceRegion, targetRegion, positions, config)
-	    var resultRegion = result.region
-
-	    if (!resultRegion.equalsSize(sourceRegion)){
-	        this.setSize(resultRegion.getSize())
-	    }
-	    if (!resultRegion.equalsPosition(sourceRegion)){
-	        this.setPosition(resultRegion.getPosition(), { absolute: !!config.absolute })
-	    }
-
-	    return result.position
-	}
-
-	module.exports = Region
-
-/***/ },
-/* 59 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
@@ -5610,17 +6158,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	})
 
 /***/ },
-/* 60 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getInstantiatorFunction = __webpack_require__(69)
+	var getInstantiatorFunction = __webpack_require__(70)
 
 	module.exports = function(fn, args){
 		return getInstantiatorFunction(args.length)(fn, args)
 	}
 
 /***/ },
-/* 61 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -5927,353 +6475,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 62 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	module.exports = function(str){
-		return str?
-				str.charAt(0).toUpperCase() + str.slice(1):
-				''
-	}
-
-/***/ },
-/* 63 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var toUpperFirst = __webpack_require__(62)
-	var prefixes     = ["ms", "Moz", "Webkit", "O"]
-
-	var el = __webpack_require__(64)
-
-	var ELEMENT
-	var PREFIX
-
-	module.exports = function(key){
-
-		if (PREFIX !== undefined){
-			return PREFIX
-		}
-
-		ELEMENT = ELEMENT || el()
-
-		var i = 0
-		var len = prefixes.length
-		var tmp
-		var prefix
-
-		for (; i < len; i++){
-			prefix = prefixes[i]
-			tmp = prefix + toUpperFirst(key)
-
-			if (typeof ELEMENT.style[tmp] != 'undefined'){
-				return PREFIX = prefix
-			}
-		}
-
-		return PREFIX
-	}
-
-/***/ },
-/* 64 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
-
-	var el
-
-	module.exports = function(){
-
-		if(!el && !!global.document){
-		  	el = global.document.createElement('div')
-		}
-
-		if (!el){
-			el = {style: {}}
-		}
-
-		return el
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 65 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var toUpperFirst = __webpack_require__(62)
-	var getPrefix    = __webpack_require__(63)
-	var properties   = __webpack_require__(53)
-
-	/**
-	 * Returns the given key prefixed, if the property is found in the prefixProps map.
-	 *
-	 * Does not test if the property supports the given value unprefixed.
-	 * If you need this, use './getPrefixed' instead
-	 */
-	module.exports = function(key, value){
-
-		if (!properties[key]){
-			return key
-		}
-
-		var prefix = getPrefix(key)
-
-		return prefix?
-					prefix + toUpperFirst(key):
-					key
-	}
-
-/***/ },
-/* 66 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict'
-
-	var Region = __webpack_require__(22)
-
-	/**
-	 * @static
-	 * Aligns the source region to the target region, so as to correspond to the given alignment.
-	 *
-	 * NOTE that this method makes changes on the sourceRegion in order for it to be aligned as specified.
-	 *
-	 * @param {Region} sourceRegion
-	 * @param {Region} targetRegion
-	 *
-	 * @param {String} align A string with 2 valid align positions, eg: 'tr-bl'.
-	 * For valid positions, see {@link Region#getPoint}
-	 *
-	 * Having 2 regions, we need to be able to align them as we wish:
-	 *
-	 * for example, if we have
-	 *
-	 *       source    target
-	 *       ________________
-	 *       ____
-	 *      |    |     ________
-	 *      |____|    |        |
-	 *                |        |
-	 *                |________|
-	 *
-	 * and we align 't-t', we get:
-	 *
-	 *       source    target
-	 *       _________________
-	 *
-	 *       ____      ________
-	 *      |    |    |        |
-	 *      |____|    |        |
-	 *                |________|
-	 *
-	 *  In this case, the source was moved down to be aligned to the top of the target
-	 *
-	 *
-	 * and if we align 'tc-tc' we get
-	 *
-	 *       source     target
-	 *       __________________
-	 *
-	 *                 ________
-	 *                | |    | |
-	 *                | |____| |
-	 *                |________|
-	 *
-	 *  Since the source was moved to have the top-center point to be the same with target top-center
-	 *
-	 *
-	 *
-	 * @return {RegionClass} The Region class
-	 */
-	Region.align = function(sourceRegion, targetRegion, align){
-
-	    targetRegion = Region.from(targetRegion)
-
-	    align = (align || 'c-c').split('-')
-
-	    //<debug>
-	    if (align.length != 2){
-	        console.warn('Incorrect region alignment! The align parameter need to be in the form \'br-c\', that is, a - separated string!', align)
-	    }
-	    //</debug>
-
-	    return Region.alignToPoint(sourceRegion, targetRegion.getPoint(align[1]), align[0])
-	}
-
-	/**
-	 * Modifies the given region to be aligned to the point, as specified by anchor
-	 *
-	 * @param {Region} region The region to align to the point
-	 * @param {Object} point The point to be used as a reference
-	 * @param {Number} point.x
-	 * @param {Number} point.y
-	 * @param {String} anchor The position where to anchor the region to the point. See {@link #getPoint} for available options/
-	 *
-	 * @return {Region} the given region
-	 */
-	Region.alignToPoint = function(region, point, anchor){
-
-	    region = Region.from(region)
-
-	    var sourcePoint = region.getPoint(anchor)
-	    var count       = 0
-	    var shiftObj    = {}
-
-	    if (
-	            sourcePoint.x != null &&
-	            point.x != null
-	        ){
-
-	            count++
-	            shiftObj.left = point.x - sourcePoint.x
-	    }
-
-	    if (
-	            sourcePoint.y != null &&
-	            point.y != null
-	        ){
-	            count++
-	            shiftObj.top = point.y - sourcePoint.y
-	    }
-
-	    if (count){
-
-	        region.shift(shiftObj)
-
-	    }
-
-	    return region
-	}
-
-/***/ },
-/* 67 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Region = __webpack_require__(22)
-
-	/**
-	 *
-	 * Aligns this region to the given region
-	 * @param {Region} region
-	 * @param {String} alignPositions For available positions, see {@link #getPoint}
-	 *
-	 *     eg: 'tr-bl'
-	 *
-	 * @return this
-	 */
-	Region.prototype.alignToRegion = function(region, alignPositions){
-	    Region.align(this, region, alignPositions)
-
-	    return this
-	}
-
-	/**
-	 * Aligns this region to the given point, in the anchor position
-	 * @param {Object} point eg: {x: 20, y: 600}
-	 * @param {Number} point.x
-	 * @param {Number} point.y
-	 *
-	 * @param {String} anchor For available positions, see {@link #getPoint}
-	 *
-	 *     eg: 'bl'
-	 *
-	 * @return this
-	 */
-	 Region.prototype.alignToPoint = function(point, anchor){
-	    Region.alignToPoint(this, point, anchor)
-
-	    return this
-	}
-
-/***/ },
-/* 68 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict'
-
-	var ALIGN_TO_NORMALIZED = __webpack_require__(70)
-
-	var Region = __webpack_require__(22)
-
-	/**
-	 * @localdoc Given source and target regions, and the given alignments required, returns a region that is the resulting allignment.
-	 * Does not modify the sourceRegion.
-	 *
-	 * Example
-	 *
-	 *      var sourceRegion = zippy.getInstance({
-	 *          alias  : 'z.region',
-	 *          top    : 10,
-	 *          left   : 10,
-	 *          bottom : 40,
-	 *          right  : 100
-	 *      })
-	 *
-	 *      var targetRegion = zippy.getInstance({
-	 *          alias  : 'z.region',
-	 *          top    : 10,
-	 *          left   : 10,
-	 *          bottom : 40,
-	 *          right  : 100
-	 *      })
-	 *      //has top-left at (10,10)
-	 *      //and bottom-right at (40, 100)
-	 *
-	 *      var alignRegion = alignable.COMPUTE_ALIGN_REGION(sourceRegion, targetRegion, 'tl-br')
-	 *
-	 *      //alignRegion will be a clone of sourceRegion, but will have the
-	 *      //top-left corner aligned with bottom-right of targetRegion
-	 *
-	 *      alignRegion.get() // => { top: 40, left: 100, bottom: 70, right: 190 }
-	 *
-	 * @param  {Region} sourceRegion The source region to align to targetRegion
-	 * @param  {Region} targetRegion The target region to which to align the sourceRegion
-	 * @param  {String/String[]} positions    A string ( delimited by "-" characters ) or an array of strings with the position to try, in the order of their priority.
-	 * See Region#getPoint for a list of available positions. They can be combined in any way.
-	 * @param  {Object} config      A config object with other configuration for the alignment
-	 * @param  {Object/Object[]} config.offset      Optional offsets. Either an object or an array with a different offset for each position
-	 * @param  {Element/Region/Boolean} config.constrain  The constrain to region or element. If the boolean true, Region.getDocRegion() will be used
-	 * @param  {Object/Boolean} config.sync   A boolean object that indicates whether to sync sourceRegion and targetRegion sizes (width/height or both). Can be
-	 *
-	 *  * true - in order to sync both width and height
-	 *  * { width: true }  - to only sync width
-	 *  * { height: true } - to only sync height
-	 *  * { size: true }   - to sync both width and height
-	 *
-	 * @return {Object} an object with the following keys:
-	 *
-	 *  * position - the position where the alignment was made. One of the given positions
-	 *  * region   - the region where the alignment is in place
-	 *  * positionChanged - boolean value indicating if the position of the returned region is different from the position of sourceRegion
-	 *  * widthChanged    - boolean value indicating if the width of the returned region is different from the width of sourceRegion
-	 *  * heightChanged   - boolean value indicating if the height of the returned region is different from the height of sourceRegion
-	 */
-	function COMPUTE_ALIGN_REGION(sourceRegion, targetRegion, positions, config){
-	    sourceRegion = Region.from(sourceRegion)
-
-	    var sourceClone = sourceRegion.clone()
-	    var position    = ALIGN_TO_NORMALIZED(sourceClone, targetRegion, positions, config)
-
-	    return {
-	        position        : position,
-	        region          : sourceClone,
-	        widthChanged    : sourceClone.getWidth() != sourceRegion.getWidth(),
-	        heightChanged   : sourceClone.getHeight() != sourceRegion.getHeight(),
-	        positionChanged : sourceClone.equalsPosition(sourceRegion)
-	    }
-	}
-
-
-	module.exports = COMPUTE_ALIGN_REGION
-
-/***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(){
@@ -6304,188 +6506,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	}()
-
-/***/ },
-/* 70 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict'
-
-	var Region = __webpack_require__(22)
-
-	/**
-	 *
-	 * This method is trying to align the sourceRegion to the targetRegion, given the alignment positions
-	 * and the offsets. It only modifies the sourceRegion
-	 *
-	 * This is all well and easy, but if there is a constrainTo region, the algorithm has to take it into account.
-	 * In this case, it works as follows.
-	 *
-	 *  * start with the first alignment position. Aligns the region, adds the offset and then check for the constraint.
-	 *  * if the constraint condition is ok, return the position.
-	 *  * otherwise, remember the intersection area, if the regions are intersecting.
-	 *  * then go to the next specified align position, and so on, computing the maximum intersection area.
-	 *
-	 * If no alignment fits the constrainRegion, the sourceRegion will be resized to match it,
-	 * using the position with the maximum intersection area.
-	 *
-	 * Since we have computed the index of the position with the max intersection area, take that position,
-	 * and align the sourceRegion accordingly. Then resize the sourceRegion to the intersection, and reposition
-	 * it again, since resizing it might have destroyed the alignment.
-	 *
-	 * Return the position.
-	 *
-	 * @param {Region} sourceRegion
-	 * @param {Region} targetRegion
-	 * @param {String[]} positions
-	 * @param {Object} config
-	 * @param {Array} config.offset
-	 * @param {Region} config.constrain
-	 * @param {Boolean/Object} config.sync
-	 *
-	 * @return {String/Undefined} the chosen position for the alignment, or undefined if no position found
-	 */
-	function ALIGN_TO_NORMALIZED(sourceRegion, targetRegion, positions, config){
-
-	    targetRegion = Region.from(targetRegion)
-
-	    config = config  || {}
-
-	    var constrainTo = config.constrain,
-	        syncOption  = config.sync,
-	        offsets     = config.offset || [],
-	        syncWidth   = false,
-	        syncHeight  = false,
-	        sourceClone = sourceRegion.clone()
-
-	    /*
-	     * Prepare the method arguments: positions, offsets, constrain and sync options
-	     */
-	    if (!Array.isArray(positions)){
-	        positions = positions? [positions]: []
-	    }
-
-	    if (!Array.isArray(offsets)){
-	        offsets = offsets? [offsets]: []
-	    }
-
-	    if (constrainTo){
-	        constrainTo = constrainTo === true?
-	                                Region.getDocRegion():
-	                                constrainTo.getRegion()
-	    }
-
-	    if (syncOption){
-
-	        if (syncOption.size){
-	            syncWidth  = true
-	            syncHeight = true
-	        } else {
-	            syncWidth  = syncOption === true?
-	                            true:
-	                            syncOption.width || false
-
-	            syncHeight = syncOption === true?
-	                            true:
-	                            syncOption.height || false
-	        }
-	    }
-
-	    if (syncWidth){
-	        sourceClone.setWidth(targetRegion.getWidth())
-	    }
-	    if (syncHeight){
-	        sourceClone.setHeight(targetRegion.getHeight())
-
-	    }
-
-	    var offset,
-	        i = 0,
-	        len = positions.length,
-	        pos,
-	        intersection,
-	        itArea,
-	        maxArea = -1,
-	        maxAreaIndex = -1
-
-	    for (; i < len; i++){
-	        pos     = positions[i]
-	        offset  = offsets[i]
-
-	        sourceClone.alignToRegion(targetRegion, pos)
-
-	        if (offset){
-	            if (!Array.isArray(offset)){
-	                offset = offsets[i] = [offset.x || offset.left, offset.y || offset.top]
-	            }
-
-	            sourceClone.shift({
-	                left: offset[0],
-	                top : offset[1]
-	            })
-	        }
-
-	        //the source region is already aligned in the correct position
-
-	        if (constrainTo){
-	            //if we have a constrain region, test for the constrain
-	            intersection = sourceClone.getIntersection(constrainTo)
-
-	            if ( intersection && intersection.equals(sourceClone) ) {
-	                //constrain respected, so return (the aligned position)
-
-	                sourceRegion.set(sourceClone)
-	                return pos
-	            } else {
-
-	                //the constrain was not respected, so continue trying
-	                if (intersection && ((itArea = intersection.getArea()) > maxArea)){
-	                    maxArea      = itArea
-	                    maxAreaIndex = i
-	                }
-	            }
-
-	        } else {
-	            sourceRegion.set(sourceClone)
-	            return pos
-	        }
-	    }
-
-	    //no alignment respected the constraints
-	    if (~maxAreaIndex){
-	        pos     = positions[maxAreaIndex]
-	        offset  = offsets[maxAreaIndex]
-
-	        sourceClone.alignToRegion(targetRegion, pos)
-
-	        if (offset){
-	            sourceClone.shift({
-	                left: offset[0],
-	                top : offset[1]
-	            })
-	        }
-
-	        //we are sure an intersection exists, because of the way the maxAreaIndex was computed
-	        intersection = sourceClone.getIntersection(constrainTo)
-
-	        sourceClone.setRegion(intersection)
-	        sourceClone.alignToRegion(targetRegion, pos)
-
-	        if (offset){
-	            sourceClone.shift({
-	                left: offset[0],
-	                top : offset[1]
-	            })
-	        }
-
-	        sourceRegion.set(sourceClone)
-
-	        return pos
-	    }
-
-	}
-
-	module.exports = ALIGN_TO_NORMALIZED
 
 /***/ }
 /******/ ])
