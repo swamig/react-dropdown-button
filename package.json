@@ -53,6 +53,6 @@
     "object-assign": "^2.0.0",
     "react-button": "^1.2.1",
     "react-clonewithprops": "^1.0.1",
-    "react-menus": "^1.1.1"
+    "react-menus": "https://github.com/swamig/react-menu.git"
   }
 }
